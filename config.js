@@ -3,6 +3,9 @@
 // ACTUALIZA ESTA URL después de publicar tu Google Sheet
 const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nRNvW0kxwWMwaScflXuMKo6SxkAChyLMuI-dOzFOGj_ysPQnnPsmel9UO6QEudePYtJ_ZAYjjNU/pub?output=csv';
 
+// URL para la pestaña Socials (gid=1 para la segunda pestaña)
+const GOOGLE_SHEET_SOCIALS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nRNvW0kxwWMwaScflXuMKo6SxkAChyLMuI-dOzFOGj_ysPQnnPsmel9UO6QEudePYtJ_ZAYjjNU/pub?gid=1&single=true&output=csv';
+
 const CATEGORY_MAPPING = {
   'Project': 'works',
   'Exhibition': 'works',
@@ -25,13 +28,29 @@ const FEATURED_TALKS = [
   'TEDxBoston: Countdown to Artificial General Intelligence'
 ];
 
+// Headers predeterminados para el CSV (en caso de que no tenga headers)
+const DEFAULT_HEADERS = ['Year', 'Type', 'Title', 'Institution', 'City', 'Country', 'Collaborators', 'Link', 'Tags', 'Image_URL', 'Description'];
+
 // Función para parsear CSV manualmente
 function parseCSV(text) {
-  const lines = text.split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
+  const lines = text.split('\n').filter(line => line.trim());
+  if (lines.length === 0) return [];
+  
+  // Verificar si la primera línea es un header o datos
+  const firstLine = lines[0];
+  const firstValue = parseCSVLine(firstLine)[0];
+  
+  // Si el primer valor es un año (número de 4 dígitos), no hay headers
+  const hasHeaders = !/^\d{4}$/.test(firstValue?.trim());
+  
+  const headers = hasHeaders 
+    ? parseCSVLine(lines[0]).map(h => h.trim())
+    : DEFAULT_HEADERS;
+  
+  const startIndex = hasHeaders ? 1 : 0;
 
   const data = [];
-  for (let i = 1; i < lines.length; i++) {
+  for (let i = startIndex; i < lines.length; i++) {
     if (lines[i].trim()) {
       const values = parseCSVLine(lines[i]);
       const entry = {};
@@ -185,6 +204,32 @@ async function loadCVData() {
     return organizedData;
   } catch (error) {
     console.error('Error loading CV data:', error);
+    return null;
+  }
+}
+
+// Función para cargar datos de Socials desde Google Sheets
+async function loadSocialsData() {
+  try {
+    const response = await fetch(GOOGLE_SHEET_SOCIALS_URL);
+    const text = await response.text();
+    const data = parseCSV(text);
+    
+    // Convertir a objeto clave-valor
+    const socials = {};
+    data.forEach(entry => {
+      // Buscar columnas posibles (Platform/Red, Link/URL)
+      const platform = entry.Platform || entry.Red || entry.Name || entry.Nombre || Object.values(entry)[0];
+      const link = entry.Link || entry.URL || entry.Enlace || Object.values(entry)[1];
+      
+      if (platform && link) {
+        socials[platform.toLowerCase().trim()] = link.trim();
+      }
+    });
+    
+    return socials;
+  } catch (error) {
+    console.error('Error loading Socials data:', error);
     return null;
   }
 }

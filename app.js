@@ -1,7 +1,7 @@
 // Translations
 const translations = {
   en: {
-    work: 'Work',
+    work: 'Works',
     talks: 'Talks',
     publications: 'Publications',
     about: 'About',
@@ -22,7 +22,7 @@ const translations = {
     roles: ['Urban Researcher', 'Computational Designer', 'PhD Candidate', 'Architect', 'City Scientist']
   },
   es: {
-    work: 'Trabajo',
+    work: 'Trabajos',
     talks: 'Charlas',
     publications: 'Publicaciones',
     about: 'Sobre mí',
@@ -105,22 +105,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Rotating role text in About section
+// Rotating role text in About section and intro slide
 function initRotatingRole() {
   const roleElement = document.getElementById('rotating-role');
-  if (!roleElement) return;
+  const roleElementSlide = document.getElementById('rotating-role-slide');
+  
+  if (!roleElement && !roleElementSlide) return;
   
   window.currentRoles = translations[currentLang].roles;
   let currentIndex = 0;
   
   setInterval(() => {
-    roleElement.classList.add('fade');
+    // Fade out both elements
+    if (roleElement) roleElement.classList.add('fade');
+    if (roleElementSlide) roleElementSlide.classList.add('fade');
     
     setTimeout(() => {
       const roles = window.currentRoles || translations[currentLang].roles;
       currentIndex = (currentIndex + 1) % roles.length;
-      roleElement.textContent = roles[currentIndex];
-      roleElement.classList.remove('fade');
+      
+      // Update both elements
+      if (roleElement) {
+        roleElement.textContent = roles[currentIndex];
+        roleElement.classList.remove('fade');
+      }
+      if (roleElementSlide) {
+        roleElementSlide.textContent = roles[currentIndex];
+        roleElementSlide.classList.remove('fade');
+      }
     }, 300);
   }, 3000);
 }
@@ -135,7 +147,9 @@ function initSlider() {
   
   let currentSlide = 0;
   let autoSlideInterval;
+  let isFrozen = false; // Track if slider is frozen on About slide
   const AUTO_SLIDE_DELAY = 5000; // 5 seconds
+  const LAST_SLIDE_INDEX = slides.length - 1; // About slide
   
   function goToSlide(index) {
     // Remove active class from current slide and indicator
@@ -145,16 +159,28 @@ function initSlider() {
     // Update current slide index
     currentSlide = index;
     
-    // Handle wrapping
+    // Handle wrapping (but not if going to last slide)
     if (currentSlide >= slides.length) currentSlide = 0;
     if (currentSlide < 0) currentSlide = slides.length - 1;
     
     // Add active class to new slide and indicator
     slides[currentSlide].classList.add('active');
     indicators[currentSlide].classList.add('active');
+    
+    // Freeze on last slide (About)
+    if (currentSlide === LAST_SLIDE_INDEX) {
+      stopAutoSlide();
+      isFrozen = true;
+    }
   }
   
   function nextSlide() {
+    // Don't auto-advance past the last slide
+    if (currentSlide === LAST_SLIDE_INDEX) {
+      stopAutoSlide();
+      isFrozen = true;
+      return;
+    }
     goToSlide(currentSlide + 1);
   }
   
@@ -163,6 +189,7 @@ function initSlider() {
   }
   
   function startAutoSlide() {
+    if (isFrozen) return; // Don't restart if frozen
     autoSlideInterval = setInterval(nextSlide, AUTO_SLIDE_DELAY);
   }
   
@@ -172,7 +199,11 @@ function initSlider() {
   
   function resetAutoSlide() {
     stopAutoSlide();
-    startAutoSlide();
+    // Only restart auto-slide if not on last slide
+    if (currentSlide !== LAST_SLIDE_INDEX) {
+      isFrozen = false;
+      startAutoSlide();
+    }
   }
   
   // Arrow navigation
@@ -185,8 +216,15 @@ function initSlider() {
   
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {
-      nextSlide();
-      resetAutoSlide();
+      // If frozen on last slide, go to first slide
+      if (isFrozen && currentSlide === LAST_SLIDE_INDEX) {
+        isFrozen = false;
+        goToSlide(0);
+        startAutoSlide();
+      } else {
+        goToSlide(currentSlide + 1);
+        resetAutoSlide();
+      }
     });
   }
   
@@ -235,17 +273,87 @@ function initHeaderScroll() {
 
 // Cargar y renderizar datos del CV
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log('DOM loaded, starting data fetch...');
+  
+  try {
+    // Cargar datos principales primero (crítico)
   const data = await loadCVData();
+    console.log('CV data loaded:', data ? 'success' : 'failed');
 
   if (data) {
-    renderWorks(data.works);
-    renderTalks(data.talks);
-    renderPublications(data.publications);
-    renderMedia(data.media);
-    renderAwards(data.awards);
-    renderAbout(data.about);
+      console.log('Works:', data.works?.length, 'Talks:', data.talks?.length);
+      if (data.works?.length) renderWorks(data.works);
+      if (data.talks?.length) renderTalks(data.talks);
+      if (data.publications?.length) renderPublications(data.publications);
+      if (data.media?.length) renderMedia(data.media);
+      if (data.awards?.length) renderAwards(data.awards);
+      if (data.about) renderAbout(data.about);
+    } else {
+      console.error('No data received from Google Sheets');
+      document.getElementById('works-grid').innerHTML = '<p style="padding: 2rem; color: #666;">Loading data... If this persists, please refresh the page.</p>';
+    }
+    
+    // Cargar socials de forma separada (no crítico)
+    try {
+      const socials = await loadSocialsData();
+      if (socials) {
+        updateSocialLinks(socials);
+      }
+    } catch (e) {
+      console.warn('Could not load socials:', e);
+    }
+  } catch (error) {
+    console.error('Error loading CV data:', error);
+    document.getElementById('works-grid').innerHTML = '<p style="padding: 2rem; color: red;">Error loading data. Please check console.</p>';
   }
 });
+
+// Actualizar enlaces de redes sociales dinámicamente
+function updateSocialLinks(socials) {
+  // Formatear WhatsApp (agregar prefijo si es necesario)
+  const whatsappNum = socials.whatsapp || socials.telefono;
+  const whatsappLink = whatsappNum ? `https://wa.me/${whatsappNum.replace(/[^0-9]/g, '')}` : null;
+  
+  // Mapeo de plataformas a sus enlaces
+  const links = {
+    linkedin: socials.linkedin || socials.linkedIn,
+    instagram: socials.instagram || socials.instragram, // typo common
+    scholar: socials['google scholar'] || socials.googlescholar || socials.scholar,
+    whatsapp: whatsappLink,
+    email: socials.email ? `mailto:${socials.email}` : null
+  };
+  
+  // Actualizar botón flotante de WhatsApp
+  const whatsappBtn = document.getElementById('whatsapp-btn');
+  if (whatsappBtn && links.whatsapp) {
+    whatsappBtn.href = links.whatsapp;
+  }
+  
+  // Actualizar enlaces en About section
+  const aboutSocial = document.querySelector('.about-social');
+  if (aboutSocial && Object.values(links).some(v => v)) {
+    aboutSocial.innerHTML = `
+      ${links.linkedin ? `<a href="${links.linkedin}" target="_blank">LinkedIn</a>` : ''}
+      ${links.instagram ? `<a href="${links.instagram}" target="_blank">Instagram</a>` : ''}
+      ${links.scholar ? `<a href="${links.scholar}" target="_blank">Scholar</a>` : ''}
+      ${links.whatsapp ? `<a href="${links.whatsapp}" target="_blank">WhatsApp</a>` : ''}
+    `;
+  }
+  
+  // Actualizar enlaces en Footer
+  const footerSocial = document.querySelector('footer .social-links');
+  if (footerSocial && Object.values(links).some(v => v)) {
+    footerSocial.innerHTML = `
+      ${links.linkedin ? `<a href="${links.linkedin}" target="_blank">LinkedIn</a>` : ''}
+      ${links.instagram ? `<a href="${links.instagram}" target="_blank">Instagram</a>` : ''}
+      ${links.scholar ? `<a href="${links.scholar}" target="_blank">Google Scholar</a>` : ''}
+      ${links.whatsapp ? `<a href="${links.whatsapp}" target="_blank">WhatsApp</a>` : ''}
+      <a href="mailto:leticiai@mit.edu">Email</a>
+    `;
+  }
+  
+  console.log('Social links loaded:', links);
+}
 
 // MIT Media Lab style - smart grid filling with paired cards
 // Mapping de imágenes para Works/Projects
@@ -257,12 +365,25 @@ const WORK_IMAGES = {
   'Ghaf': 'Images/Ghafs.jpg',
   'Gastronomy': 'Images/gastronomy.png',
   'gastronomy': 'Images/gastronomy.png',
+  'Active Carbon Sink': 'Images/Canopy.jpg',  // Must be BEFORE 'Carbon'
+  'Manzanares': 'Images/Canopy.jpg',
+  'Urban AI for Zoning': 'Images/SF.png',
+  'Zoning & Development': 'Images/SF.png',
+  'Madrid Nuevo Norte': 'Images/MNN.jpeg',
   'Carbon': 'Images/20241116_NAHM_AM_146.png',
   'Neighborhood-Scale': 'Images/20241116_NAHM_AM_146.png',
   'Affordable Housing': 'Images/Doshi.jpg',
   'Displaced Communities': 'Images/Doshi.jpg',
   // Añade más: 'Nombre del proyecto': 'Images/imagen.jpg'
 };
+
+// Archived works - only shown when "More" is clicked
+const ARCHIVED_WORKS = [
+  'ORILUM',
+  'Kinetic Origami',
+  'Immersive Scope',
+  'HairIO',
+];
 
 // Featured works - most impactful urban planning & design projects
 const FEATURED_WORKS = [
@@ -286,12 +407,18 @@ const FEATURED_WORKS = [
 function renderWorks(works) {
   const container = document.getElementById('works-grid');
   
-  // Sort: featured first, then by year, then by having image
+  // Sort: featured first, archived last, then by year, then by having image
   works.sort((a, b) => {
     const aFeatured = FEATURED_WORKS.some(fw => a.title?.includes(fw));
     const bFeatured = FEATURED_WORKS.some(fw => b.title?.includes(fw));
+    const aArchived = ARCHIVED_WORKS.some(aw => a.title?.includes(aw));
+    const bArchived = ARCHIVED_WORKS.some(aw => b.title?.includes(aw));
     const aHasImage = a.image && !a.image.includes('placeholder');
     const bHasImage = b.image && !b.image.includes('placeholder');
+    
+    // Archived projects last
+    if (aArchived && !bArchived) return 1;
+    if (bArchived && !aArchived) return -1;
     
     // Featured projects first
     if (aFeatured && !bFeatured) return -1;
@@ -307,90 +434,48 @@ function renderWorks(works) {
 
   // Apply local image mappings (only if CSV doesn't have a valid image)
   works = works.map(work => {
-    // Si ya tiene una imagen válida del CSV, no la sobreescribimos
-    const hasValidCsvImage = work.image && !work.image.includes('placeholder');
-    
-    if (!hasValidCsvImage) {
-      const localImage = Object.keys(WORK_IMAGES).find(key => 
-        work.title?.includes(key) || work.institution?.includes(key)
-      );
-      if (localImage) {
-        work.image = WORK_IMAGES[localImage];
-      }
+    // Always check local images first (override CSV)
+    // Sort keys by length (longest first) to match most specific key
+    const sortedKeys = Object.keys(WORK_IMAGES).sort((a, b) => b.length - a.length);
+    const localImage = sortedKeys.find(key => 
+      work.title?.includes(key) || work.institution?.includes(key)
+    );
+    if (localImage) {
+      work.image = WORK_IMAGES[localImage];
     }
     return work;
   });
   
-  const VISIBLE_COUNT = 9; // 3 rows of 3 or similar
+  const VISIBLE_COUNT = 12;
   const hasMore = works.length > VISIBLE_COUNT;
   
   function renderWorkCards(worksToRender) {
-    const columns = 4;
-    const worksWithImages = worksToRender.filter(w => w.image && !w.image.includes('placeholder'));
-    
-    let totalCells = worksToRender.length;
-    const remainder = totalCells % columns;
-    let extraCellsNeeded = remainder > 0 ? columns - remainder : 0;
-    
-    const doubleIndices = new Set();
-    let extraAdded = 0;
-    for (let i = 0; i < worksToRender.length && extraAdded < extraCellsNeeded; i++) {
-      const work = worksToRender[i];
-      if (work.image && !work.image.includes('placeholder')) {
-        doubleIndices.add(i);
-        extraAdded++;
-      }
-    }
-
     let html = '';
     worksToRender.forEach((work, index) => {
       const hasImage = work.image && !work.image.includes('placeholder');
-      const isDoubled = doubleIndices.has(index);
       const isDarkCard = index % 5 === 4;
       
-      // Use tags from CSV if available, otherwise use type (if not Project)
+      // Use tags from CSV if available, otherwise use type
       let badgeText = '';
       if (work.tags && work.tags.trim()) {
         badgeText = work.tags.trim();
-      } else if (work.type && work.type !== 'Project') {
+      } else if (work.type) {
         badgeText = work.type;
       }
-      const typeTag = badgeText ? `<span class="type-badge">${badgeText}</span>` : '';
+      // Highlight Project and Exhibit in accent color
+      const isHighlighted = badgeText === 'Project' || badgeText === 'Exhibit' || badgeText.toUpperCase() === 'EXHIBIT';
+      const typeTag = badgeText ? `<span class="type-badge${isHighlighted ? ' highlight' : ''}">${badgeText}</span>` : '';
       
-      if (isDoubled && hasImage) {
-        html += `
-          <div class="project-card text-card">
-            <div class="project-content">
-              ${typeTag}
-              <h3>${work.title}</h3>
-              ${work.description ? `<p class="description">${work.description}</p>` : ''}
-            </div>
-            <div class="project-meta">
-              <p class="date">${work.year}</p>
-              <p class="institution">${work.institution}</p>
-              ${work.location ? `<div class="tags"><span class="tag">${work.location.replace(', ', '</span><span class="tag">')}</span></div>` : ''}
-            </div>
-            ${work.link ? `<a href="${work.link}" target="_blank" class="card-link"></a>` : ''}
-          </div>
-        `;
-        html += `
-          <div class="project-card image-card">
-            <div class="project-image">
-              <img src="${work.image}" alt="${work.title}">
-            </div>
-          </div>
-        `;
-      } else if (hasImage) {
+      if (hasImage) {
         html += `
           <div class="project-card image-card">
       <div class="project-image">
-              <img src="${work.image}" alt="${work.title}" onerror="this.parentElement.parentElement.classList.add('text-card'); this.parentElement.remove();">
+              <img src="${work.image}" alt="${work.title}" onerror="this.parentElement.parentElement.classList.add('no-image'); this.parentElement.remove();">
       </div>
             <div class="project-overlay">
       <div class="project-content">
                 ${typeTag}
         <h3>${work.title}</h3>
-                ${work.description ? `<p class="description">${work.description}</p>` : ''}
               </div>
               <div class="project-meta">
                 <p class="date">${work.year}</p>
@@ -424,7 +509,7 @@ function renderWorks(works) {
     return html;
   }
   
-  // Show only first 12 works initially
+  // Show only first works initially
   const visibleWorks = works.slice(0, VISIBLE_COUNT);
   container.innerHTML = renderWorkCards(visibleWorks);
   
@@ -516,7 +601,8 @@ function renderTalks(talks) {
 const PUB_IMAGES = {
   'Spanish Pavilion catalogue becoming Venice Architecture Biennale': 'Images/becoming.webp',
   'XIV Bienal Española de Arquitectura y Urbanismo': 'Images/bienale.jpg',
-  'Neighborhood-Scale Carbon Emissions Impact': 'Images/catalog-open-ps-ExihbitX.png'
+  'Neighborhood-Scale Carbon Emissions Impact': 'Images/catalog-open-ps-ExihbitX.png',
+  'Generative Agents': 'Images/adornetto1-3566362-small.gif'  // TODO: Replace with Gen-carlo when available
 };
 
 // Default image for publications preview
@@ -524,7 +610,7 @@ const DEFAULT_PUB_IMAGE = 'Images/becoming.webp';
 
 function renderPublications(publications) {
   const container = document.getElementById('publications-list');
-  container.className = 'magazine-stack';
+  container.className = 'publications-grid';
   
   // Helper to check if publication has image
   function getPubImage(pub) {
@@ -541,30 +627,32 @@ function renderPublications(publications) {
   });
 
   container.innerHTML = publications.map(pub => {
-    // Check for local image
     const pubImage = getPubImage(pub);
     const hasImage = pubImage && !pubImage.includes('placeholder');
     
     if (hasImage) {
       return `
-        <article class="magazine-card" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
-          <div class="magazine-bg">
-            <img src="${pubImage}" alt="${pub.title}" class="pub-image">
+        <article class="pub-card" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
+          <div class="pub-image-wrap">
+            <img src="${pubImage}" alt="${pub.title}">
           </div>
-          <div class="pub-info">
-            <p class="pub-title">${pub.title}</p>
-            <p class="pub-date">${pub.journal ? `${pub.journal} · ` : ''}${pub.year}</p>
+          <div class="pub-content">
+            <span class="pub-year">${pub.year}</span>
+            <h3 class="pub-title">${pub.title}</h3>
+            ${pub.journal ? `<p class="pub-journal">${pub.journal}</p>` : ''}
           </div>
         </article>
       `;
     } else {
       return `
-        <article class="magazine-card text-only" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
-          <div class="magazine-bg">
-            <p class="pub-title-large">${pub.title}</p>
+        <article class="pub-card text-only" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
+          <div class="pub-image-wrap">
+            <span class="pub-placeholder">📄</span>
       </div>
-          <div class="pub-info">
-            <p class="pub-date">${pub.journal ? `${pub.journal} · ` : ''}${pub.year}</p>
+          <div class="pub-content">
+            <span class="pub-year">${pub.year}</span>
+            <h3 class="pub-title">${pub.title}</h3>
+            ${pub.journal ? `<p class="pub-journal">${pub.journal}</p>` : ''}
     </div>
         </article>
       `;
