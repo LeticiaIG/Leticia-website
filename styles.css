@@ -7,20 +7,24 @@
 }
 
 :root {
-    --bg-light: #f5f5f5;
-    --bg-dark: #1a1a1a;
-    --text-dark: #1a1a1a;
+    --bg-light: #f8f7fa;
+    --bg-dark: #0a0a0a;
+    --text-dark: #0a0a0a;
     --text-light: #ffffff;
-    --text-muted: #666666;
+    --text-muted: #888888;
     --accent: #e63946;
-    --border: #e0e0e0;
+    --accent-red: #e63946;
+    --accent-blue: #457b9d;
+    --border: #222222;
+    --gradient: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
 }
 
 body {
     font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.5;
-    color: var(--text-dark);
-    background: var(--bg-light);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    color: white;
+    background: var(--bg-dark);
 }
 
 /* Header & Navigation - Floating over slider */
@@ -36,12 +40,15 @@ header {
 /* Default state: White text over dark slider images */
 header .logo {
     font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 2.25rem;
+    font-size: 1.5rem;
     font-weight: 400;
-    color: white;
-    letter-spacing: -0.02em;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.3);
-    transition: color 0.4s ease, text-shadow 0.4s ease;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    transition: all 0.4s ease;
 }
 
 header .nav-links a {
@@ -49,16 +56,20 @@ header .nav-links a {
     color: white;
     font-family: 'Source Serif 4', Georgia, serif;
     font-weight: 400;
-    font-size: 1.75rem;
+    font-size: 1.1rem;
     transition: all 0.3s ease;
     padding-bottom: 2px;
-    border-bottom: 2px solid transparent;
+    border-bottom: 1px solid transparent;
     text-shadow: 0 1px 8px rgba(0,0,0,0.3);
 }
 
 header .nav-links a:hover,
 header .nav-links a.active {
-    border-bottom: 2px solid white;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-bottom: 1px solid var(--accent-red);
 }
 
 header .lang-toggle a {
@@ -79,36 +90,50 @@ header .lang-toggle a:hover {
 
 /* Scrolled state: Dark text on white background */
 header.scrolled {
-    background: rgba(255,255,255,0.98);
+    background: rgba(0,0,0,0.95);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 1px 0 var(--border);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.1);
 }
 
 header.scrolled .logo {
-    color: var(--text-dark);
-    text-shadow: none;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Gradient text utility */
+.gradient-text {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 header.scrolled .nav-links a {
-    color: var(--text-dark);
+    color: rgba(255,255,255,0.7);
     text-shadow: none;
 }
 
 header.scrolled .nav-links a:hover,
 header.scrolled .nav-links a.active {
-    border-bottom-color: var(--text-dark);
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-bottom-color: var(--accent-red);
 }
 
 header.scrolled .lang-toggle a {
-    border-color: var(--text-dark) !important;
-    color: var(--text-dark);
+    border-color: rgba(255,255,255,0.5) !important;
+    color: rgba(255,255,255,0.7);
     text-shadow: none;
 }
 
 header.scrolled .lang-toggle a:hover {
-    background: var(--text-dark);
-    color: white !important;
+    background: white;
+    color: black !important;
 }
 
 nav {
@@ -126,7 +151,7 @@ nav {
 
 .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
     list-style: none;
 }
 
@@ -137,6 +162,101 @@ nav {
     position: relative;
     overflow: hidden;
     padding: 0;
+    background: #000000;
+}
+
+/* ================================
+   Organic Blob Animation (Cambridge CCA inspired)
+   ================================ */
+.organic-blobs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cloud-like breathing bubble */
+.cloud-bubble {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 700px;
+    filter: blur(50px);
+    mix-blend-mode: screen;
+    opacity: 0.9;
+    animation: cloudBreathe 6s ease-in-out infinite, cloudMorph 12s ease-in-out infinite;
+    background: 
+        radial-gradient(ellipse 80% 60% at 30% 40%, rgba(230, 57, 70, 1) 0%, transparent 50%),
+        radial-gradient(ellipse 70% 80% at 70% 60%, rgba(69, 123, 157, 0.9) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 70% at 50% 50%, rgba(123, 104, 166, 0.8) 0%, transparent 60%);
+}
+
+/* Secondary cloud layer for depth */
+.cloud-bubble-2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    height: 550px;
+    filter: blur(70px);
+    mix-blend-mode: screen;
+    opacity: 0.7;
+    animation: cloudBreathe 8s ease-in-out infinite reverse, cloudMorph 15s ease-in-out infinite reverse;
+    animation-delay: -2s;
+    background: 
+        radial-gradient(ellipse 70% 50% at 60% 40%, rgba(196, 69, 105, 0.9) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 70% at 40% 60%, rgba(100, 130, 180, 0.8) 0%, transparent 50%);
+}
+
+/* Hide individual blobs - using cloud instead */
+.blob {
+    display: none;
+}
+
+/* Cloud breathing - expand and contract like breathing */
+@keyframes cloudBreathe {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.6;
+    }
+    30% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.75;
+    }
+    60% {
+        transform: translate(-50%, -50%) scale(1.25);
+        opacity: 0.8;
+    }
+    80% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.65;
+    }
+}
+
+/* Cloud morphing - organic shape changes */
+@keyframes cloudMorph {
+    0%, 100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    25% {
+        border-radius: 40% 60% 50% 50% / 40% 50% 50% 60%;
+    }
+    50% {
+        border-radius: 50% 50% 60% 40% / 60% 40% 60% 40%;
+    }
+    75% {
+        border-radius: 30% 70% 40% 60% / 50% 60% 40% 50%;
+    }
 }
 
 .slider-container {
@@ -169,6 +289,8 @@ nav {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0.4;
+    filter: blur(3px); /* Soft focus for better text legibility */
 }
 
 /* Top gradient overlay for header legibility */
@@ -195,19 +317,90 @@ nav {
 }
 
 .slide-about img {
-    filter: brightness(0.4);
+    filter: brightness(0.3);
+    opacity: 0.8;
 }
 
-.slide-about-content {
+/* Hero About Overlay - Always visible over slider */
+.hero-about-overlay {
     position: absolute;
     top: 50%;
     left: 0;
     transform: translateY(-50%);
-    padding: 4rem 2rem 4rem 4rem;
-    padding-left: calc(4rem + 2rem); /* Same as #about > .container + .about-text padding */
-    max-width: 600px;
+    padding: 0 4rem;
+    max-width: 550px;
     color: white;
     z-index: 10;
+}
+
+.hero-about-overlay .bio-main {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    line-height: 1.2;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1rem;
+}
+
+.hero-about-overlay .bio-role {
+    font-style: italic;
+    display: inline;
+    background: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: opacity 0.3s;
+}
+
+.hero-about-overlay .bio-role.fade {
+    opacity: 0;
+}
+
+.hero-about-overlay .bio-secondary {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 2rem;
+}
+
+.hero-about-overlay .contact-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    padding-bottom: 3px;
+    transition: all 0.2s;
+}
+
+.hero-about-overlay .contact-btn:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-color: var(--accent-red);
+}
+
+@media (max-width: 768px) {
+    .hero-about-overlay {
+        padding: 0 1.5rem;
+        max-width: 100%;
+    }
+    
+    .hero-about-overlay .bio-main {
+        font-size: 1.8rem;
+    }
+    
+    .hero-about-overlay .bio-secondary {
+        font-size: 0.9rem;
+    }
+}
+
+/* Legacy slide-about-content - kept for compatibility */
+.slide-about-content {
+    display: none; /* No longer used */
 }
 
 /* Slide About - Uses same classes as #about section */
@@ -216,14 +409,17 @@ nav {
     font-size: 2.5rem;
     font-weight: 400;
     line-height: 1.2;
-    color: white;
+    color: rgba(255, 255, 255, 0.6); /* Softer tone for "based in Boston" */
     margin-bottom: 0.5rem;
 }
 
 .slide-about-content .bio-role {
-    color: var(--accent);
     font-style: italic;
     display: inline;
+    background: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     transition: opacity 0.3s;
 }
 
@@ -268,8 +464,11 @@ nav {
 }
 
 .slide-about-content .contact-btn:hover {
-    color: var(--accent);
-    border-color: var(--accent);
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-color: var(--accent-pink);
 }
 
 .slide-about-content .about-social {
@@ -288,7 +487,10 @@ nav {
 }
 
 .slide-about-content .about-social a:hover {
-    color: white;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* Responsive for slide-about */
@@ -379,7 +581,8 @@ nav {
 
 /* Sections */
 section {
-    padding: 3rem 0;
+    padding: 6rem 0;
+    background: var(--bg-dark);
 }
 
 section h2 {
@@ -387,34 +590,247 @@ section h2 {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
+    color: white;
     color: var(--text-dark);
     letter-spacing: -0.02em;
 }
 
 /* MIT Media Lab Grid - The main feature */
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--border);
-}
+/* Works Carousel */
+/* Works section - see #works below for grid styles */
 
-.project-card {
-    background: white;
-    aspect-ratio: 1;
+.work-card {
+    flex: 0 0 400px;
+    height: 500px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s;
 }
 
-.project-card:hover {
+.work-card:hover {
+    transform: translateY(-8px);
+}
+
+.work-card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.work-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.work-card:hover .work-card-image img {
+    transform: scale(1.05);
+}
+
+.work-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+    color: white;
+}
+
+.work-card-year {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.75rem;
+}
+
+.work-card-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+}
+
+.work-card-venue {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.work-card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+}
+
+.work-card.no-image {
+    background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%);
+}
+
+.work-card.no-image .work-card-overlay {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: transparent;
+}
+
+/* Works Navigation */
+.works-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
     z-index: 10;
 }
 
-/* Card variations */
-.project-card.image-card {
+.works-nav:hover {
+    background: white;
+}
+
+.works-nav.prev {
+    left: 0;
+}
+
+.works-nav.next {
+    right: 0;
+}
+
+.works-nav svg {
+    width: 20px;
+    height: 20px;
+    stroke: white;
+    transition: stroke 0.3s;
+}
+
+.works-nav:hover svg {
+    stroke: var(--bg-dark);
+}
+
+@media (max-width: 768px) {
+    .works-carousel-wrapper {
+        padding: 0 1rem;
+    }
+    
+    .work-card {
+        flex: 0 0 320px;
+        height: 420px;
+    }
+    
+    .works-nav {
+        display: none;
+    }
+}
+
+/* Project Cards - Large with overlay */
+.project-card {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    cursor: pointer;
     background: var(--bg-dark);
+}
+
+.project-card .project-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.project-card .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.3s;
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.05);
+}
+
+.project-card .project-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+    z-index: 2;
+}
+
+/* Year on top with gradient color */
+.project-card .project-year {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.75rem;
+}
+
+/* Title - large and prominent */
+.project-card .project-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: white;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+}
+
+/* Venue/Institution below title */
+.project-card .project-label {
+    display: block;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.project-card .card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+}
+
+/* Cards without images - text style */
+.project-card:not(.has-image) {
+    display: flex;
+    align-items: flex-end;
+    background: rgba(255,255,255,0.03);
+}
+
+.project-card:not(.has-image) .project-info {
+    position: relative;
+    background: none;
     position: relative;
     overflow: hidden;
 }
@@ -506,15 +922,31 @@ section h2 {
 }
 
 .project-card.text-card {
-    background: white;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 1.5rem;
 }
 
+.project-card.text-card h3 {
+    color: white;
+}
+
+.project-card.text-card .description {
+    color: rgba(255,255,255,0.7);
+}
+
+.project-card.text-card .date,
+.project-card.text-card .institution {
+    color: rgba(255,255,255,0.5);
+}
+
 .project-card.dark-card {
-    background: var(--bg-dark);
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
     color: white;
     display: flex;
     flex-direction: column;
@@ -530,17 +962,24 @@ section h2 {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #e63946;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 0.5rem;
 }
 
 .project-card.dark-card .type-badge {
-    color: #e63946;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .project-card.image-card .type-badge {
-    color: #e63946;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #ff6b7a 0%, #c44569 50%, #6b9dc4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
 }
 
 .project-card.dark-card h3 {
@@ -668,53 +1107,61 @@ section h2 {
 }
 
 /* Timeline sections with grid style */
+/* ================================
+   Talks - Blog-style Grid
+   ================================ */
 .timeline-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--border);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
 }
 
 .timeline-item {
     background: white;
-    padding: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    min-height: 220px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.timeline-item.featured {
-    background: var(--bg-dark);
-    color: white;
+.timeline-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-.timeline-item.featured h3 {
-    color: white;
+.timeline-item-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
 }
 
-.timeline-item.featured .meta,
-.timeline-item.featured .institution,
-.timeline-item.featured .description {
-    color: rgba(255,255,255,0.6);
+.timeline-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
 }
 
-.timeline-item.featured .meta a {
-    color: var(--accent);
+.timeline-item:hover .timeline-item-image img {
+    transform: scale(1.05);
+}
+
+.timeline-item-content {
+    padding: 1rem;
 }
 
 .timeline-item .type-badge {
     display: inline-block;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--accent);
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 0.5rem;
-}
-
-.timeline-item.featured .type-badge {
-    color: var(--accent);
 }
 
 .timeline-item h3 {
@@ -723,27 +1170,64 @@ section h2 {
     font-weight: 600;
     line-height: 1.3;
     margin-bottom: 0.25rem;
+    color: var(--text-dark);
+}
+
+.timeline-item h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.timeline-item h3 a:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .timeline-item .institution {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.75rem;
 }
 
 .timeline-item .description {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    line-height: 1.4;
-    margin-bottom: 0.5rem;
-    flex-grow: 1;
+    line-height: 1.6;
+    margin-bottom: 1rem;
 }
 
 .timeline-item .meta {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
-    margin-top: auto;
+}
+
+.timeline-item .meta a {
+    color: var(--text-dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--text-dark);
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.timeline-item .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .timeline-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .timeline-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .timeline-item .meta a {
@@ -753,100 +1237,6 @@ section h2 {
 
 .timeline-item .meta a:hover {
     text-decoration: underline;
-}
-
-/* Timeline item with background image */
-.timeline-item.has-image {
-    position: relative;
-    background-size: cover;
-    background-position: center;
-    color: white;
-    min-height: 350px;
-}
-
-.timeline-item.has-image::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.6) 0%,
-        rgba(0,0,0,0.5) 30%,
-        rgba(0,0,0,0.6) 60%,
-        rgba(0,0,0,0.9) 100%
-    );
-    z-index: 1;
-}
-
-.timeline-item.has-image > * {
-    position: relative;
-    z-index: 2;
-}
-
-.timeline-item.has-image h3 {
-    color: white;
-    font-size: 1.5rem;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-}
-
-.timeline-item.has-image .type-badge {
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-
-.timeline-item.has-image .type-badge {
-    color: white;
-    border: none;
-    padding: 0;
-    background: transparent;
-}
-
-.timeline-item.has-image .institution,
-.timeline-item.has-image .description,
-.timeline-item.has-image .meta {
-    color: rgba(255,255,255,0.9);
-}
-
-.timeline-item h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.5rem;
-    flex-grow: 0;
-}
-
-.timeline-item .institution {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-}
-
-.timeline-item .description {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.timeline-item .meta {
-    margin-top: auto;
-    padding-top: 1rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.timeline-item a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.85rem;
 }
 
 .timeline-item a:hover {
@@ -907,38 +1297,22 @@ section h2 {
     margin-top: auto;
 }
 
-/* About Section - Clean & Elegant */
-#about {
-    background: url('Images/perfil.JPG');
-    background-size: cover;
-    background-position: center top;
-    background-attachment: fixed;
-    padding: 0;
-    position: relative;
+/* CV Content styles moved to footer */
+
+.about-contact-footer .about-social a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: all 0.2s;
 }
 
-#about::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.3) 0%,
-        rgba(0,0,0,0.5) 20%,
-        rgba(0,0,0,0.75) 40%,
-        rgba(0,0,0,0.9) 60%,
-        rgba(0,0,0,0.95) 100%
-    );
-    z-index: 1;
-}
-
-#about > .container {
-    position: relative;
-    z-index: 2;
-    padding: 4rem 2rem 4rem 4rem;
+.about-contact-footer .about-social a:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 #about h2 {
@@ -970,14 +1344,17 @@ section h2 {
     font-size: 2.5rem;
     font-weight: 400;
     line-height: 1.2;
-    color: white;
+    color: var(--text-muted); /* Softer tone for "based in Boston" */
     margin-bottom: 0.5rem;
 }
 
 .about-text .bio-role {
-    color: var(--accent);
     font-style: italic;
     display: inline;
+    background: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     transition: opacity 0.3s;
 }
 
@@ -1022,8 +1399,11 @@ section h2 {
 }
 
 .contact-btn:hover {
-    color: var(--accent);
-    border-color: var(--accent);
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-color: var(--accent-pink);
 }
 
 .about-social {
@@ -1042,7 +1422,10 @@ section h2 {
 }
 
 .about-social a:hover {
-    color: white;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 @media (max-width: 900px) {
@@ -1055,21 +1438,56 @@ section h2 {
     }
 }
 
+/* Collapsible CV Content */
+.cv-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0;
+}
+
+.cv-content.open {
+    max-height: 600px;
+    padding-top: 2rem;
+}
+
+.cv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+}
+
+.cv-grid.cv-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.cv-column h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Legacy about-grid for compatibility */
 .about-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 3rem;
-    padding-left: 2rem;
 }
 
 .about-grid h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 1.25rem;
-    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
@@ -1078,11 +1496,20 @@ section h2 {
 .experience-item,
 .award-item {
     display: grid;
-    grid-template-columns: 50px 1fr;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    padding: 0.5rem 0;
+    grid-template-columns: 55px 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
     border-bottom: 1px solid rgba(255,255,255,0.05);
+    line-height: 1.6;
+}
+
+.education-item:last-child,
+.experience-item:last-child,
+.award-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .education-item .year,
@@ -1091,60 +1518,412 @@ section h2 {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.75rem;
     color: rgba(255,255,255,0.4);
-    padding-top: 0.1rem;
+    padding-top: 0.15rem;
 }
 
 .education-item h4,
 .experience-item h4,
 .award-item h4 {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 0.95rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
     font-weight: 500;
-    margin: 0 0 0.15rem 0;
+    margin: 0 0 0.25rem 0;
     color: white;
-    line-height: 1.3;
+    line-height: 1.4;
 }
 
 .education-item .institution,
 .experience-item .institution,
 .award-item .institution {
     font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: rgba(255,255,255,0.5);
+    line-height: 1.5;
 }
 
 @media (max-width: 900px) {
+    .cv-grid,
     .about-grid {
         grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
     }
+    
+    .cv-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .cv-contact {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 }
 
 @media (max-width: 600px) {
+    .cv-grid,
     .about-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
 }
 
+/* ================================
+   Blog Section
+   ================================ */
+/* ================================
+   Talks Section - Clean List with Thumbnails
+   ================================ */
+#talks {
+    background: var(--bg-dark);
+    padding: 6rem 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.section-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 3rem;
+}
+
+.talks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 900px;
+}
+
+.talk-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    align-items: start;
+    transition: all 0.2s;
+}
+
+.talk-item:first-child {
+    padding-top: 0;
+}
+
+.talk-item:hover {
+    padding-left: 0.5rem;
+}
+
+.talk-thumb {
+    width: 80px;
+    height: 60px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.03);
+}
+
+.talk-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.3s;
+}
+
+.talk-item:hover .talk-thumb img {
+    filter: grayscale(0%);
+}
+
+.talk-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.talk-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.35);
+}
+
+.talk-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: white;
+    line-height: 1.3;
+}
+
+.talk-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.talk-item:hover .talk-title a {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.talk-meta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+}
+
+@media (max-width: 768px) {
+    .talk-item {
+        grid-template-columns: 60px 1fr;
+        gap: 1rem;
+    }
+    
+    .talk-thumb {
+        width: 60px;
+        height: 45px;
+    }
+    
+    .talk-title {
+        font-size: 1rem;
+    }
+}
+
+/* Section blob - reusable animated background */
+.section-blob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.section-blob .cloud-bubble {
+    width: 500px;
+    height: 500px;
+    opacity: 0.5;
+    top: 50%;
+    left: 30%;
+}
+
+.section-blob .cloud-bubble-2 {
+    width: 400px;
+    height: 400px;
+    opacity: 0.4;
+    top: 50%;
+    left: 60%;
+}
+
+#blog .container {
+    position: relative;
+    z-index: 1;
+}
+
+#blog h2 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+#blog .more-link {
+    color: rgba(255,255,255,0.5);
+}
+
+#blog .more-link:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#blog .section-subtitle {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 2rem;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.blog-post {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+
+.blog-post:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-color: rgba(230, 57, 70, 0.3);
+}
+
+.blog-post-image {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+}
+
+.blog-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.blog-post:hover .blog-post-image img {
+    transform: scale(1.05);
+}
+
+.blog-post-content {
+    padding: 1rem;
+}
+
+.blog-post-type {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.blog-post-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.05em;
+    margin-top: 0.5rem;
+}
+
+.blog-post-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.blog-post-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.blog-post-title a:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.blog-post-excerpt {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.blog-post-read-more {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-bottom: 1px solid var(--text-dark);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.blog-post-read-more:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-color: var(--accent-pink);
+}
+
+/* Blog responsive */
+@media (max-width: 900px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Footer - Brutalist */
 footer {
-    background: var(--bg-dark);
+    background: #111111;
     color: white;
-    padding: 2rem 0;
-    border-top: 1px solid rgba(255,255,255,0.2);
+    padding: 3rem 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
 }
 
 footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footer-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-footer p {
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.footer-copy {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+footer .contact-btn {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.75rem;
-    opacity: 0.5;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.2s;
+}
+
+footer .contact-btn:hover {
+    background: white;
+    color: var(--bg-dark);
 }
 
 footer .social-links {
@@ -1154,18 +1933,66 @@ footer .social-links {
 
 footer .social-links a {
     font-family: 'IBM Plex Mono', monospace;
-    color: white;
+    color: rgba(255,255,255,0.5);
     text-decoration: none;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    transition: color 0.2s;
     opacity: 0.7;
     transition: opacity 0.2s;
 }
 
 footer .social-links a:hover {
-    opacity: 1;
-    text-decoration: underline;
+    color: white;
+}
+
+/* Footer CV toggle */
+footer .cv-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    padding: 0.4rem 0.8rem;
+    transition: all 0.2s;
+}
+
+footer .cv-toggle:hover {
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+}
+
+footer .cv-toggle-icon {
+    font-size: 0.9rem;
+    font-weight: 300;
+    transition: transform 0.3s;
+}
+
+footer .cv-toggle.active .cv-toggle-icon {
+    transform: rotate(45deg);
+}
+
+/* Footer responsive */
+@media (max-width: 768px) {
+    .footer-main {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+    
+    .footer-left,
+    .footer-right {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 }
 
 /* Responsive */
@@ -1267,13 +2094,15 @@ footer .social-links a:hover {
 .more-link {
     font-family: 'Source Serif 4', Georgia, serif;
     font-size: 0.95rem;
-    color: var(--text-muted);
+    color: rgba(255,255,255,0.5);
     text-decoration: none;
-    transition: color 0.2s;
+    transition: all 0.2s;
 }
 
 .more-link:hover {
-    color: var(--accent);
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Dark section more link */
@@ -1294,8 +2123,38 @@ footer .social-links a:hover {
 
 #publications .section-header,
 #talks .section-header,
-#works .section-header {
-    border-bottom: none;
+#works {
+    padding: 4rem 0;
+    background: var(--bg-dark);
+}
+
+/* Project Grid - 3x2 rectangular layout */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* View all projects link */
+.view-all-projects {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.view-all-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.view-all-link:hover {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* ================================
@@ -1465,11 +2324,16 @@ footer .social-links a:hover {
 
 .media-article {
     display: grid;
-    grid-template-columns: 70px 1fr 140px;
-    gap: 1rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    align-items: start;
+    grid-template-columns: 60px 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    align-items: baseline;
+    transition: padding-left 0.2s;
+}
+
+.media-article:hover {
+    padding-left: 0.5rem;
 }
 
 .media-article:first-child {
@@ -1478,16 +2342,16 @@ footer .social-links a:hover {
 
 .media-date {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: rgba(255,255,255,0.4);
-    padding-top: 0.15rem;
 }
 
 .media-body h3 {
     font-family: 'Source Serif 4', Georgia, serif;
     font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.25;
+    font-weight: 500;
+    line-height: 1.35;
+    margin-bottom: 0.25rem;
     color: var(--text-light);
     margin-bottom: 0.3rem;
 }
@@ -1554,72 +2418,476 @@ footer .social-links a:hover {
 }
 
 /* ================================
-   Publications - Stacked Magazines Style
+   Publications - Horizontal Carousel (Cambridge Teaching style)
    ================================ */
-.publications-grid {
+#publications {
+    background: var(--bg-dark);
+    padding: 6rem 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+#publications .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Publications & Media - Clean List */
+.pub-media-list {
     display: flex;
-    padding: 2rem;
-    overflow-x: auto;
+    flex-direction: column;
     gap: 0;
+}
+
+.pub-media-item {
+    display: grid;
+    grid-template-columns: 50px 90px 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    align-items: baseline;
+    transition: all 0.2s;
+}
+
+.pub-media-item:first-child {
+    padding-top: 0;
+}
+
+.pub-media-item:hover {
+    padding-left: 0.5rem;
+}
+
+.pm-year {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.pm-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+}
+
+.pm-content h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: white;
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+}
+
+.pm-content h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pub-media-item:hover h3 a {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pm-outlet {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+}
+
+/* ================================
+   Publications & Talks - Inset Continuation
+   ================================ */
+#publications.works-continuation {
+    background: var(--bg-dark);
+    padding: 2rem 0 4rem;
+    position: relative;
+    border-top: none;
+}
+
+/* Section label - subtle */
+.continuation-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.3);
+    padding: 0 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Inset carousel wrapper */
+.inset-carousel-wrapper {
+    position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 3rem;
+}
+
+/* Side fade gradients */
+.carousel-fade-left,
+.carousel-fade-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 80px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.carousel-fade-left {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-dark) 0%, transparent 100%);
+}
+
+.carousel-fade-right {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-dark) 0%, transparent 100%);
+}
+
+/* Mini navigation arrows */
+.mini-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.mini-nav:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+}
+
+.mini-nav.prev {
+    left: 0.5rem;
+}
+
+.mini-nav.next {
+    right: 0.5rem;
+}
+
+.visual-carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 0.5rem 0;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
 }
 
-.publications-grid::-webkit-scrollbar {
-    height: 4px;
+.visual-carousel::-webkit-scrollbar {
+    display: none;
 }
 
-.publications-grid::-webkit-scrollbar-thumb {
-    background: var(--text-muted);
-}
-
-.pub-card {
-    flex: 0 0 280px;
+/* Smaller cards - inset style */
+.visual-card {
+    flex: 0 0 320px;
     height: 400px;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    background: white;
-    margin-left: -30px;
-    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
-    transition: transform 0.4s, z-index 0s, box-shadow 0.3s;
+    transition: transform 0.3s;
 }
 
-.pub-card:first-child {
-    margin-left: 0;
+.visual-card:hover {
+    transform: translateY(-4px);
 }
 
-/* Z-index stacking - first on top */
-.pub-card:nth-child(1) { z-index: 10; }
-.pub-card:nth-child(2) { z-index: 9; }
-.pub-card:nth-child(3) { z-index: 8; }
-.pub-card:nth-child(4) { z-index: 7; }
-.pub-card:nth-child(5) { z-index: 6; }
-.pub-card:nth-child(6) { z-index: 5; }
-.pub-card:nth-child(7) { z-index: 4; }
-.pub-card:nth-child(8) { z-index: 3; }
-.pub-card:nth-child(9) { z-index: 2; }
-.pub-card:nth-child(10) { z-index: 1; }
-
-.pub-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    z-index: 20 !important;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-}
-
-.pub-card .pub-image-wrap {
+.visual-card-image {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.visual-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.visual-card:hover .visual-card-image img {
+    transform: scale(1.05);
+}
+
+.visual-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+    color: white;
+}
+
+.visual-card-year {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+}
+
+.visual-card-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: white;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+}
+
+.visual-card-venue {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+}
+
+.visual-card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+}
+
+.visual-card.no-image {
+    /* Background set inline via JS for unique gradients */
+    position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #f5f5f5 0%, #e5e5e5 100%);
+}
+
+/* Animated grain/noise texture overlay */
+.visual-card.no-image::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 40%),
+                radial-gradient(circle at 40% 40%, rgba(255,255,255,0.02) 0%, transparent 60%);
+    animation: subtleMove 20s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes subtleMove {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(5%, 5%) rotate(2deg); }
+}
+
+.visual-card.no-image .visual-card-overlay {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+}
+
+/* ================================
+   Text List (Media & Workshops)
+   ================================ */
+#media-workshops {
+    background: var(--bg-dark);
+    padding: 6rem 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+#media-workshops .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Section Tabs */
+.section-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.section-tab {
+    background: none;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.4);
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: all 0.2s;
+}
+
+.section-tab:hover {
+    color: rgba(255,255,255,0.7);
+}
+
+.section-tab.active {
+    color: white;
+    border-bottom: 1px solid white;
+}
+
+.tab-divider {
+    color: rgba(255,255,255,0.2);
+    font-size: 0.75rem;
+}
+
+.no-items {
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
+    padding: 2rem 0;
+}
+
+.text-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.text-list-item {
+    display: grid;
+    grid-template-columns: 50px 80px 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    align-items: baseline;
+    transition: all 0.2s;
+}
+
+.text-list-item:first-child {
+    padding-top: 0;
+}
+
+.text-list-item:hover {
+    padding-left: 0.5rem;
+}
+
+.tl-year {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.tl-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+}
+
+.tl-content h3 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: white;
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+}
+
+.tl-content h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.text-list-item:hover h3 a {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tl-outlet {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+}
+
+/* Award items - subtle highlight */
+.text-list-item.award .tl-type {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .visual-card {
+        flex: 0 0 260px;
+        height: 340px;
+    }
+    
+    .inset-carousel-wrapper {
+        padding: 0 1rem;
+    }
+    
+    .mini-nav {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+    
+    .carousel-fade-left,
+    .carousel-fade-right {
+        width: 40px;
+    }
+    
+    .text-list-item {
+        grid-template-columns: 40px 70px 1fr;
+        gap: 1rem;
+    }
+}
+
+.pub-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pub-card:hover {
+    border-color: var(--accent-red);
+    transform: translateY(-4px);
+}
+
+.pub-card .pub-image-wrap {
+    width: 100%;
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    background: var(--bg-dark-alt);
 }
 
 .pub-card .pub-image-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.4s;
     transition: transform 0.5s;
 }
 
@@ -1627,80 +2895,83 @@ footer .social-links a:hover {
     transform: scale(1.05);
 }
 
+/* Content below image */
 .pub-card .pub-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
-    color: white;
+    padding: 1.25rem;
 }
 
 .pub-card .pub-year {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.65rem;
-    color: var(--accent);
-    letter-spacing: 0.08em;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.5rem;
 }
 
 .pub-card .pub-title {
     font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 1.05rem;
+    font-weight: 500;
     color: white;
-    line-height: 1.3;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    line-height: 1.35;
+    margin-bottom: 0.5rem;
+}
+
+.pub-card:hover .pub-title {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .pub-card .pub-journal {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.7);
-    margin-top: 0.25rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.4;
+}
+
+.pub-card .pub-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
 }
 
 /* Text-only publication cards (no image) */
 .pub-card.text-only .pub-image-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
+    display: none;
 }
 
-.pub-card.text-only .pub-placeholder {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 3rem;
-    color: #bbb;
+.pub-nav.prev {
+    left: 0;
 }
 
-/* Responsive */
+.pub-nav.next {
+    right: 0;
+}
+
+/* Publications Responsive */
+@media (max-width: 900px) {
+    .publications-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 600px) {
     .publications-grid {
-        padding: 1.5rem;
+        grid-template-columns: 1fr;
     }
     
-    .pub-card {
-        flex: 0 0 220px;
-        height: 320px;
-        margin-left: -20px;
+    .pub-card .pub-title {
+        font-size: 0.95rem;
     }
-}
-
-
-/* Dot indicator for items with images */
-.pub-card[data-image] .pub-date::before {
-    content: '●';
-    display: inline-block;
-    margin-right: 0.3rem;
-    font-size: 0.5rem;
-    color: var(--accent);
-    vertical-align: middle;
 }
 
 @media (max-width: 1100px) {
-    .publications-wrapper {
+    .container {
         grid-template-columns: 1fr 280px;
     }
     
@@ -1724,7 +2995,24 @@ footer .social-links a:hover {
    ================================ */
 #media {
     background: var(--bg-dark);
-    padding: 3rem 0;
+    padding: 6rem 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+#media .container {
+    max-width: 900px;
+}
+
+#media .section-blob .cloud-bubble {
+    left: 70%;
+    top: 40%;
+    opacity: 0.4;
+}
+
+#media .section-blob .cloud-bubble-2 {
+    left: 10%;
+    top: 50%;
+    opacity: 0.3;
 }
 
 #media h2 {

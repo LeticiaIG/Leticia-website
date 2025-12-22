@@ -4,6 +4,7 @@ const translations = {
     work: 'Works',
     talks: 'Talks',
     publications: 'Publications',
+    blog: 'Blog',
     about: 'About',
     selectedWorks: 'Selected Works',
     talksWorkshops: 'Talks & Workshops',
@@ -18,13 +19,14 @@ const translations = {
     awards: 'Awards',
     getInTouch: 'Get in touch →',
     bioTagline: 'Available for talks, collaborations and consulting.',
-    bioSecondary: "Born in Madrid, trained as an architect and computational designer at UPM — Polytechnic University of Madrid. Spent years working on how technology can make cities more human. Now a PhD researcher at MIT Media Lab's City Science group.",
+    bioSecondary: "Born in Madrid, trained as an architect and computational designer at UPM — Polytechnic University of Madrid. Spent years working on how technology can make cities more human. I model how people perceive, navigate, and feel cities and spaces—then feed that back into design tools and digital simulations. Now a PhD researcher at MIT Media Lab's City Science group.",
     roles: ['Urban Researcher', 'Computational Designer', 'PhD Candidate', 'Architect', 'City Scientist']
   },
   es: {
     work: 'Trabajos',
     talks: 'Charlas',
     publications: 'Publicaciones',
+    blog: 'Blog',
     about: 'Sobre mí',
     selectedWorks: 'Trabajos Seleccionados',
     talksWorkshops: 'Charlas & Talleres',
@@ -39,7 +41,7 @@ const translations = {
     awards: 'Premios',
     getInTouch: 'Contactar →',
     bioTagline: 'Disponible para charlas, colaboraciones y consultoría.',
-    bioSecondary: 'Nacida en Madrid, formada como arquitecta y diseñadora computacional en la UPM — Universidad Politécnica de Madrid. Años trabajando en cómo la tecnología puede hacer las ciudades más humanas. Ahora investigadora doctoral en el MIT Media Lab, grupo City Science.',
+    bioSecondary: 'Nacida en Madrid, formada como arquitecta y diseñadora computacional en la UPM — Universidad Politécnica de Madrid. Años trabajando en cómo la tecnología puede hacer las ciudades más humanas. Modelo cómo las personas perciben, navegan y sienten ciudades y edificios—y lo integro en herramientas de diseño y simulaciones digitales. Ahora investigadora doctoral en el MIT Media Lab, grupo City Science.',
     roles: ['Investigadora Urbana', 'Diseñadora Computacional', 'Doctoranda', 'Arquitecta', 'City Scientist']
   }
 };
@@ -52,23 +54,22 @@ function switchLanguage() {
   
   // Update nav
   document.querySelector('a[href="#works"]').textContent = t.work;
-  document.querySelector('a[href="#talks"]').textContent = t.talks;
+  document.querySelector('a[href="#blog"]').textContent = t.blog;
   document.querySelector('a[href="#publications"]').textContent = t.publications;
   document.querySelector('a[href="#about"]').textContent = t.about;
   document.getElementById('lang-switch').textContent = currentLang === 'en' ? 'ES' : 'EN';
   
   // Update section headers
-  document.querySelector('#works h2').textContent = t.selectedWorks;
-  document.querySelector('#talks h2').textContent = t.talksWorkshops;
-  document.querySelector('#publications h2').textContent = t.publications;
+  const blogH2 = document.querySelector('#blog h2');
+  const pubsH2 = document.querySelector('#publications h2');
+  if (blogH2) blogH2.textContent = t.blog;
+  if (pubsH2) pubsH2.textContent = t.publications;
   
   // Update more links
   const worksMore = document.querySelector('#works .more-link');
-  const talksMore = document.querySelector('#talks .more-link');
   const pubsMore = document.querySelector('#publications .more-link');
   const mediaMore = document.querySelector('#media .more-link');
   if (worksMore) worksMore.textContent = t.moreInWorks;
-  if (talksMore) talksMore.textContent = t.moreInTalks;
   if (pubsMore) pubsMore.textContent = t.moreInPubs;
   if (mediaMore) mediaMore.textContent = t.moreInMedia;
   
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSlider();
   initHeaderScroll();
   initRotatingRole();
+  initCVToggle();
   
   // Language switch
   document.getElementById('lang-switch').addEventListener('click', (e) => {
@@ -104,6 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
     switchLanguage();
   });
 });
+
+// CV Toggle functionality
+function initCVToggle() {
+  const toggle = document.getElementById('cv-toggle');
+  const content = document.getElementById('cv-content');
+  
+  if (!toggle || !content) return;
+  
+  toggle.addEventListener('click', () => {
+    toggle.classList.toggle('active');
+    content.classList.toggle('open');
+  });
+}
 
 // Rotating role text in About section and intro slide
 function initRotatingRole() {
@@ -258,16 +273,41 @@ function initSlider() {
   }
 }
 
-// Header scroll effect
+// Header scroll effect + Active nav highlighting
 function initHeaderScroll() {
   const header = document.querySelector('header');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  const sections = document.querySelectorAll('section[id]');
   
   window.addEventListener('scroll', () => {
+    // Header background
     if (window.scrollY > 100) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
+    
+    // Active section highlighting
+    let currentSection = '';
+    const scrollPos = window.scrollY + 150; // Offset for header
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      
+      if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+        currentSection = section.getAttribute('id');
+      }
+    });
+    
+    // Update nav links
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      const href = link.getAttribute('href');
+      if (href === `#${currentSection}`) {
+        link.classList.add('active');
+      }
+    });
   });
 }
 
@@ -283,10 +323,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (data) {
       console.log('Works:', data.works?.length, 'Talks:', data.talks?.length);
       if (data.works?.length) renderWorks(data.works);
-      if (data.talks?.length) renderTalks(data.talks);
-      if (data.publications?.length) renderPublications(data.publications);
-      if (data.media?.length) renderMedia(data.media);
-      if (data.awards?.length) renderAwards(data.awards);
+      // Publications & Talks (with images)
+      renderVisualCarousel(data.publications || [], data.talks || []);
+      // Media, Workshops & Awards (text list)
+      renderTextList(data.media || [], data.talks || [], data.awards || []);
       if (data.about) renderAbout(data.about);
     } else {
       console.error('No data received from Google Sheets');
@@ -406,6 +446,7 @@ const FEATURED_WORKS = [
 
 function renderWorks(works) {
   const container = document.getElementById('works-grid');
+  if (!container) return;
   
   // Sort: featured first, archived last, then by year, then by having image
   works.sort((a, b) => {
@@ -432,10 +473,8 @@ function renderWorks(works) {
     return b.year - a.year;
   });
 
-  // Apply local image mappings (only if CSV doesn't have a valid image)
+  // Apply local image mappings
   works = works.map(work => {
-    // Always check local images first (override CSV)
-    // Sort keys by length (longest first) to match most specific key
     const sortedKeys = Object.keys(WORK_IMAGES).sort((a, b) => b.length - a.length);
     const localImage = sortedKeys.find(key => 
       work.title?.includes(key) || work.institution?.includes(key)
@@ -446,83 +485,48 @@ function renderWorks(works) {
     return work;
   });
   
-  const VISIBLE_COUNT = 12;
+  const VISIBLE_COUNT = 6;
   const hasMore = works.length > VISIBLE_COUNT;
   
   function renderWorkCards(worksToRender) {
-    let html = '';
-    worksToRender.forEach((work, index) => {
+    return worksToRender.map(work => {
       const hasImage = work.image && !work.image.includes('placeholder');
-      const isDarkCard = index % 5 === 4;
+      const label = work.institution || work.type || '';
       
-      // Use tags from CSV if available, otherwise use type
-      let badgeText = '';
-      if (work.tags && work.tags.trim()) {
-        badgeText = work.tags.trim();
-      } else if (work.type) {
-        badgeText = work.type;
-      }
-      // Highlight Project and Exhibit in accent color
-      const isHighlighted = badgeText === 'Project' || badgeText === 'Exhibit' || badgeText.toUpperCase() === 'EXHIBIT';
-      const typeTag = badgeText ? `<span class="type-badge${isHighlighted ? ' highlight' : ''}">${badgeText}</span>` : '';
-      
-      if (hasImage) {
-        html += `
-          <div class="project-card image-card">
-      <div class="project-image">
-              <img src="${work.image}" alt="${work.title}" onerror="this.parentElement.parentElement.classList.add('no-image'); this.parentElement.remove();">
-      </div>
-            <div class="project-overlay">
-      <div class="project-content">
-                ${typeTag}
-        <h3>${work.title}</h3>
-              </div>
-              <div class="project-meta">
-                <p class="date">${work.year}</p>
-        <p class="institution">${work.institution}</p>
-      </div>
-    </div>
-            ${work.link ? `<a href="${work.link}" target="_blank" class="card-link"></a>` : ''}
-          </div>
-        `;
-      } else {
-        // Text card
-        const cardClass = isDarkCard ? 'dark-card' : 'text-card';
-        html += `
-          <div class="project-card ${cardClass}">
-            <div class="project-content">
-              ${typeTag}
-              <h3>${work.title}</h3>
-              ${work.description ? `<p class="description">${work.description}</p>` : ''}
+      return `
+        <article class="project-card ${hasImage ? 'has-image' : ''}">
+          ${hasImage ? `
+            <div class="project-image">
+              <img src="${work.image}" alt="${work.title}">
             </div>
-            <div class="project-meta">
-              <p class="date">${work.year}</p>
-              <p class="institution">${work.institution}</p>
-              ${work.location ? `<div class="tags"><span class="tag">${work.location.replace(', ', '</span><span class="tag">')}</span></div>` : ''}
-            </div>
-            ${work.link ? `<a href="${work.link}" target="_blank" class="card-link"></a>` : ''}
+          ` : ''}
+          <div class="project-info">
+            <span class="project-year">${work.year}</span>
+            <h3 class="project-title">${work.title}</h3>
+            <span class="project-label">${label}</span>
           </div>
-        `;
-      }
-    });
-    
-    return html;
+          ${work.link ? `<a href="${work.link}" target="_blank" class="card-link"></a>` : ''}
+        </article>
+      `;
+    }).join('');
   }
   
-  // Show only first works initially
+  // Show curated selection
   const visibleWorks = works.slice(0, VISIBLE_COUNT);
   container.innerHTML = renderWorkCards(visibleWorks);
   
-  // Handle "More in Works" click to expand
-  const moreLink = document.querySelector('#works .more-link');
-  if (moreLink && hasMore) {
-    moreLink.addEventListener('click', (e) => {
+  // Add "View all" link if there are more
+  if (hasMore) {
+    const viewAllLink = document.createElement('div');
+    viewAllLink.className = 'view-all-projects';
+    viewAllLink.innerHTML = `<a href="#works-full" class="view-all-link">View all projects →</a>`;
+    container.parentElement.appendChild(viewAllLink);
+    
+    viewAllLink.querySelector('a').addEventListener('click', (e) => {
       e.preventDefault();
       container.innerHTML = renderWorkCards(works);
-      moreLink.style.display = 'none';
+      viewAllLink.remove();
     });
-  } else if (moreLink && !hasMore) {
-    moreLink.style.display = 'none';
   }
 }
 
@@ -552,31 +556,32 @@ function renderTalks(talks) {
   const withoutImages = talks.filter(t => !TALK_IMAGES[t.title] && !TALK_IMAGES[t.institution] && !t.image && !t.featured);
   const sortedTalks = [...withImages, ...withoutImages];
   
-  const VISIBLE_COUNT = 6; // Show only 6 most attractive
+  const VISIBLE_COUNT = 3; // Show only 3 initially
   const visibleTalks = sortedTalks.slice(0, VISIBLE_COUNT);
   const hasMore = talks.length > VISIBLE_COUNT;
   
   function renderTalkCards(items) {
-    return items.map((talk, index) => {
+    return items.map((talk) => {
       const localImage = TALK_IMAGES[talk.title] || TALK_IMAGES[talk.institution];
       const talkImage = localImage || talk.image;
       const hasImage = talkImage && !talkImage.includes('placeholder');
-      const isDark = talk.featured || index % 4 === 3;
-      
-      const imageStyle = hasImage ? `style="background-image: url('${talkImage}')"` : '';
-      const imageClass = hasImage ? 'has-image' : (isDark ? 'featured' : '');
       
       return `
-        <div class="timeline-item ${imageClass}" ${imageStyle}>
-        <span class="type-badge">${talk.type}</span>
-        <h3>${talk.title}</h3>
-        <p class="institution">${talk.institution}</p>
-        ${talk.description ? `<p class="description">${talk.description}</p>` : ''}
-          <div class="meta">
-            ${talk.location ? `${talk.location} · ` : ''}${talk.year}
-            ${talk.link ? `<br><a href="${talk.link}" target="_blank">View →</a>` : ''}
-      </div>
-    </div>
+        <article class="timeline-item">
+          ${hasImage ? `
+            <div class="timeline-item-image">
+              <img src="${talkImage}" alt="${talk.title}">
+            </div>
+          ` : ''}
+          <div class="timeline-item-content">
+            <span class="type-badge">${talk.type}</span>
+            <h3>${talk.link ? `<a href="${talk.link}" target="_blank">${talk.title}</a>` : talk.title}</h3>
+            <p class="institution">${talk.institution}</p>
+            <div class="meta">
+              ${talk.location ? `${talk.location} · ` : ''}${talk.year}
+            </div>
+          </div>
+        </article>
       `;
     }).join('');
   }
@@ -608,56 +613,184 @@ const PUB_IMAGES = {
 // Default image for publications preview
 const DEFAULT_PUB_IMAGE = 'Images/becoming.webp';
 
-function renderPublications(publications) {
-  const container = document.getElementById('publications-list');
-  container.className = 'publications-grid';
+// Publications & Talks - Visual carousel with images
+function renderVisualCarousel(publications, talks) {
+  const container = document.getElementById('visual-carousel');
+  if (!container) return;
   
-  // Helper to check if publication has image
+  // Helper to get publication image
   function getPubImage(pub) {
     const localImage = Object.keys(PUB_IMAGES).find(key => pub.title.includes(key));
     return localImage ? PUB_IMAGES[localImage] : (pub.image || null);
   }
   
-  // Sort: first by image (with images first), then by year
-  publications.sort((a, b) => {
-    const aHasImage = getPubImage(a) ? 1 : 0;
-    const bHasImage = getPubImage(b) ? 1 : 0;
-    if (bHasImage !== aHasImage) return bHasImage - aHasImage;
-    return b.year - a.year;
-  });
-
-  container.innerHTML = publications.map(pub => {
-    const pubImage = getPubImage(pub);
-    const hasImage = pubImage && !pubImage.includes('placeholder');
+  // Combine publications and talks (only those that are "Talk" type, not workshops)
+  const pubItems = publications.map(p => ({
+    ...p,
+    itemType: 'Publication',
+    venue: p.journal,
+    image: getPubImage(p)
+  }));
+  
+  const talkItems = talks
+    .filter(t => !t.type?.toLowerCase().includes('workshop'))
+    .map(t => ({
+      ...t,
+      itemType: 'Talk',
+      venue: t.institution,
+      image: TALK_IMAGES[t.title] || TALK_IMAGES[t.institution] || t.image
+    }));
+  
+  const allItems = [...pubItems, ...talkItems];
+  
+  // Sort by year (newest first)
+  allItems.sort((a, b) => b.year - a.year);
+  
+  container.innerHTML = allItems.map(item => {
+    const hasImage = item.image && !item.image.includes('placeholder');
     
-    if (hasImage) {
-      return `
-        <article class="pub-card" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
-          <div class="pub-image-wrap">
-            <img src="${pubImage}" alt="${pub.title}">
+    // Generate unique gradient for cards without images
+    const gradientVariants = [
+      'linear-gradient(135deg, #e63946 0%, #1a1a2e 50%, #457b9d 100%)',
+      'linear-gradient(225deg, #457b9d 0%, #1a1a2e 40%, #e63946 100%)',
+      'linear-gradient(180deg, #7b68a6 0%, #1a1a2e 60%, #e63946 100%)',
+      'linear-gradient(45deg, #e63946 0%, #7b68a6 50%, #1a1a2e 100%)',
+      'linear-gradient(315deg, #457b9d 0%, #7b68a6 40%, #1a1a2e 100%)',
+      'linear-gradient(160deg, #1a1a2e 0%, #e63946 30%, #1a1a2e 70%, #457b9d 100%)',
+    ];
+    const gradientIndex = Math.abs(item.title.length + item.year) % gradientVariants.length;
+    const cardGradient = gradientVariants[gradientIndex];
+    
+    return `
+      <article class="visual-card ${hasImage ? '' : 'no-image'}" ${!hasImage ? `style="background: ${cardGradient}"` : ''}>
+        ${hasImage ? `
+          <div class="visual-card-image">
+            <img src="${item.image}" alt="${item.title}">
           </div>
-          <div class="pub-content">
-            <span class="pub-year">${pub.year}</span>
-            <h3 class="pub-title">${pub.title}</h3>
-            ${pub.journal ? `<p class="pub-journal">${pub.journal}</p>` : ''}
-          </div>
-        </article>
-      `;
-    } else {
-      return `
-        <article class="pub-card text-only" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
-          <div class="pub-image-wrap">
-            <span class="pub-placeholder">📄</span>
-      </div>
-          <div class="pub-content">
-            <span class="pub-year">${pub.year}</span>
-            <h3 class="pub-title">${pub.title}</h3>
-            ${pub.journal ? `<p class="pub-journal">${pub.journal}</p>` : ''}
-    </div>
-        </article>
-      `;
-    }
+        ` : ''}
+        <div class="visual-card-overlay">
+          <span class="visual-card-year">${item.year}</span>
+          <h3 class="visual-card-title">${item.title}</h3>
+          <p class="visual-card-venue">${item.venue || item.itemType}</p>
+        </div>
+        ${item.link ? `<a href="${item.link}" target="_blank" class="visual-card-link"></a>` : ''}
+      </article>
+    `;
   }).join('');
+  
+  // Initialize carousel navigation
+  initVisualCarousel();
+}
+
+function initWorksCarousel() {
+  const container = document.getElementById('works-carousel');
+  const prevBtn = document.querySelector('.works-nav.prev');
+  const nextBtn = document.querySelector('.works-nav.next');
+  
+  if (!container || !prevBtn || !nextBtn) return;
+  
+  const scrollAmount = 420; // Larger cards
+  
+  prevBtn.addEventListener('click', () => {
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
+  
+  nextBtn.addEventListener('click', () => {
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
+}
+
+function initVisualCarousel() {
+  const container = document.getElementById('visual-carousel');
+  const prevBtn = document.querySelector('#publications .mini-nav.prev');
+  const nextBtn = document.querySelector('#publications .mini-nav.next');
+  
+  if (!container) return;
+  
+  const scrollAmount = 340;
+  
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+  }
+}
+
+// Media, Workshops & Awards - Clean text list with tabs
+function renderTextList(media, talks, awards = []) {
+  const container = document.getElementById('text-list');
+  if (!container) return;
+  
+  // Get only workshops from talks
+  const workshops = talks
+    .filter(t => t.type?.toLowerCase().includes('workshop'))
+    .map(w => ({
+      ...w,
+      itemType: 'Workshop',
+      outlet: w.institution
+    }));
+  
+  // Format awards as announcements
+  const awardItems = awards.map(a => ({
+    ...a,
+    itemType: 'Award',
+    outlet: a.institution
+  }));
+  
+  // Combine all items
+  const allItems = [
+    ...media.map(m => ({ ...m, itemType: 'Media' })),
+    ...workshops,
+    ...awardItems
+  ];
+  
+  // Sort by year (newest first)
+  allItems.sort((a, b) => b.year - a.year);
+  
+  // Split into latest (5 items) and archive (rest)
+  const LATEST_COUNT = 5;
+  const latestItems = allItems.slice(0, LATEST_COUNT);
+  const archiveItems = allItems.slice(LATEST_COUNT);
+  
+  function renderItems(items) {
+    if (items.length === 0) {
+      return '<p class="no-items">No items in archive.</p>';
+    }
+    return items.map(item => `
+      <article class="text-list-item ${item.itemType.toLowerCase()}">
+        <div class="tl-year">${item.year}</div>
+        <div class="tl-type">${item.itemType}</div>
+        <div class="tl-content">
+          <h3>${item.link ? `<a href="${item.link}" target="_blank">${item.title}</a>` : item.title}</h3>
+          ${item.outlet ? `<p class="tl-outlet">${item.outlet}</p>` : ''}
+        </div>
+      </article>
+    `).join('');
+  }
+  
+  // Show latest by default
+  container.innerHTML = renderItems(latestItems);
+  
+  // Tab functionality
+  const tabs = document.querySelectorAll('#media-workshops .section-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      if (tab.dataset.tab === 'latest') {
+        container.innerHTML = renderItems(latestItems);
+      } else {
+        container.innerHTML = renderItems(archiveItems);
+      }
+    });
+  });
 }
 
 function initPublicationPreview() {
@@ -743,24 +876,15 @@ function renderMedia(media) {
   const archiveMedia = media.slice(LATEST_COUNT);
   
   function renderArticles(items) {
-    return items.map(item => {
-      const mediaImage = MEDIA_IMAGES[item.title] || item.image;
-      return `
-        <article class="media-article">
-          <div class="media-date">${item.year}</div>
-          <div class="media-body">
-            <h3>${item.link ? `<a href="${item.link}" target="_blank">${item.title}</a>` : item.title}</h3>
-            ${item.description ? `<p class="media-desc">${item.description}</p>` : ''}
-            <p class="media-author">By ${item.outlet.toUpperCase()}</p>
-      </div>
-          ${mediaImage ? `
-            <div class="media-thumb">
-              <img src="${mediaImage}" alt="${item.title}">
-    </div>
-          ` : ''}
-        </article>
-      `;
-    }).join('');
+    return items.map(item => `
+      <article class="media-article">
+        <div class="media-date">${item.year}</div>
+        <div class="media-body">
+          <h3>${item.link ? `<a href="${item.link}" target="_blank">${item.title}</a>` : item.title}</h3>
+          <p class="media-author">${item.outlet}</p>
+        </div>
+      </article>
+    `).join('');
   }
   
   // Show latest by default
@@ -787,42 +911,97 @@ function renderMedia(media) {
 function renderAwards(awards) {
   const container = document.getElementById('awards-list');
   awards.sort((a, b) => b.year - a.year);
-
-  container.innerHTML = awards.map(award => `
+  
+  const MAX_ITEMS = 3; // Show only top 3 awards
+  container.innerHTML = awards.slice(0, MAX_ITEMS).map(award => `
     <div class="award-item">
       <span class="year">${award.year}</span>
       <div>
         <h4>${award.title}</h4>
-      <p class="institution">${award.institution}</p>
+        <p class="institution">${award.institution}</p>
       </div>
     </div>
   `).join('');
 }
 
 function renderAbout(about) {
-  // Education - compact format
+  const MAX_ITEMS = 3; // Show only 3 highlights per category
+  
+  // Education - top 3 only
   const educationList = document.getElementById('education-list');
   about.education.sort((a, b) => b.year - a.year);
-  educationList.innerHTML = about.education.map(edu => `
+  educationList.innerHTML = about.education.slice(0, MAX_ITEMS).map(edu => `
     <div class="education-item">
       <span class="year">${edu.year}</span>
       <div>
-      <h4>${edu.degree}</h4>
-      <p class="institution">${edu.institution}</p>
+        <h4>${edu.degree}</h4>
+        <p class="institution">${edu.institution}</p>
       </div>
     </div>
   `).join('');
 
-  // Experience - compact format
+  // Experience - top 3 only
   const experienceList = document.getElementById('experience-list');
   about.experience.sort((a, b) => b.year - a.year);
-  experienceList.innerHTML = about.experience.map(exp => `
+  experienceList.innerHTML = about.experience.slice(0, MAX_ITEMS).map(exp => `
     <div class="experience-item">
       <span class="year">${exp.year}</span>
       <div>
-      <h4>${exp.role}</h4>
-      <p class="institution">${exp.institution}</p>
+        <h4>${exp.role}</h4>
+        <p class="institution">${exp.institution}</p>
       </div>
     </div>
   `).join('');
+}
+
+// Render Talks as horizontal carousel with cards
+function renderTalksCarousel(talks) {
+  const container = document.getElementById('talks-carousel');
+  if (!container) return;
+  
+  // Sort by year (newest first)
+  talks.sort((a, b) => b.year - a.year);
+  
+  // Render carousel cards with image and overlay
+  container.innerHTML = talks.map((talk) => {
+    const localImage = TALK_IMAGES[talk.title] || TALK_IMAGES[talk.institution] || talk.image;
+    const hasImage = localImage && !localImage.includes('placeholder');
+    
+    return `
+      <article class="talk-card ${hasImage ? '' : 'no-image'}">
+        ${hasImage ? `
+          <div class="talk-card-image">
+            <img src="${localImage}" alt="${talk.title}">
+          </div>
+        ` : ''}
+        <div class="talk-card-overlay">
+          <span class="talk-card-year">${talk.year}</span>
+          <h3 class="talk-card-title">${talk.title}</h3>
+          <p class="talk-card-venue">${talk.institution}</p>
+        </div>
+        ${talk.link ? `<a href="${talk.link}" target="_blank" class="talk-card-link"></a>` : ''}
+      </article>
+    `;
+  }).join('');
+  
+  // Initialize carousel navigation
+  initTalksCarousel();
+}
+
+function initTalksCarousel() {
+  const container = document.getElementById('talks-carousel');
+  const prevBtn = document.querySelector('.talks-nav.prev');
+  const nextBtn = document.querySelector('.talks-nav.next');
+  
+  if (!container || !prevBtn || !nextBtn) return;
+  
+  const scrollAmount = 320;
+  
+  prevBtn.addEventListener('click', () => {
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+  });
+  
+  nextBtn.addEventListener('click', () => {
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
 }

@@ -12,9 +12,9 @@
             <div class="logo">Leticia Izquierdo</div>
             <ul class="nav-links">
                 <li><a href="#works">Works</a></li>
-                <li><a href="#talks">Talks</a></li>
                 <li><a href="#publications">Publications</a></li>
-                <li><a href="#about">About</a></li>
+                <li><a href="#media-workshops">Media</a></li>
+                <li><a href="#about">Contact</a></li>
                 <li class="lang-toggle"><a href="#" id="lang-switch">ES</a></li>
             </ul>
         </nav>
@@ -22,154 +22,96 @@
 
     <!-- Hero Slider -->
     <section id="hero-slider">
+        <!-- Breathing Cloud Animation -->
+        <div class="organic-blobs">
+            <div class="cloud-bubble"></div>
+            <div class="cloud-bubble-2"></div>
+        </div>
+        
+        <!-- Fixed About overlay - always visible -->
+        <div class="hero-about-overlay">
+            <p class="bio-main">
+                <span class="bio-role" id="rotating-role-slide">Architect</span> based in Boston.
+            </p>
+            <p class="bio-secondary">Modeling how people perceive, navigate, and feel cities and spaces.<br>PhD researcher at MIT Media Lab.</p>
+            <div class="about-contact">
+                <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
+            </div>
+        </div>
+        
         <div class="slider-container">
             <div class="slides">
                 <div class="slide active">
-                    <img src="Images/Ghafs.jpg" alt="Ghaf Woods">
+                    <img src="Images/Intro/perfil.JPG" alt="Leticia Izquierdo">
                 </div>
-                <div class="slide">
-                    <img src="Images/Canopy.jpg" alt="Active Carbon Sink">
-                </div>
-                <div class="slide">
-                    <img src="Images/20241116_NAHM_AM_146.png" alt="Community Carbon Impact">
-                </div>
-                <div class="slide slide-about">
-                    <img src="Images/perfil.JPG" alt="Leticia Izquierdo">
-                    <div class="slide-about-content">
-                        <p class="bio-main">
-                            <span class="bio-role" id="rotating-role-slide">Architect</span> based in Boston.
-                        </p>
-                        <p class="bio-tagline">Available for projects, collaborations and consulting.</p>
-                        <p class="bio-secondary">Born in Madrid, trained as an architect and computational designer at the Polytechnic University of Madrid. Spent years working on how technology can make cities more human. Now a PhD researcher at MIT Media Lab's City Science group.</p>
-                        <div class="about-contact">
-                            <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
-                            <div class="about-social">
-                                <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
-                                <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
-                                <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Scholar</a>
-                                <a href="https://wa.me/34600588498" target="_blank">WhatsApp</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Navigation Arrows -->
-            <button class="slider-arrow prev" aria-label="Previous slide">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"></polyline>
-                </svg>
-            </button>
-            <button class="slider-arrow next" aria-label="Next slide">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"></polyline>
-                </svg>
-            </button>
-            
-            <!-- Slide Indicators -->
-            <div class="slider-indicators">
-                <button class="indicator active" data-slide="0"></button>
-                <button class="indicator" data-slide="1"></button>
-                <button class="indicator" data-slide="2"></button>
-                <button class="indicator" data-slide="3"></button>
             </div>
         </div>
     </section>
 
     <section id="works">
-        <div class="container">
-            <div class="section-header">
-                <h2>Selected Works</h2>
-                <a href="#works-full" class="more-link">More in Works ›</a>
-            </div>
-        </div>
         <div id="works-grid" class="project-grid"></div>
     </section>
 
-    <section id="talks">
-        <div class="container">
-            <div class="section-header">
-                <h2>Talks & Workshops</h2>
-                <a href="#talks-full" class="more-link">More in Talks ›</a>
-            </div>
+    <!-- Talks Section -->
+    <!-- Publications & Talks - Inset continuation -->
+    <section id="publications" class="works-continuation">
+        <div class="continuation-label">Publications & Talks</div>
+        <div class="inset-carousel-wrapper">
+            <div class="carousel-fade-left"></div>
+            <button class="mini-nav prev" aria-label="Previous">‹</button>
+            <div id="visual-carousel" class="visual-carousel"></div>
+            <button class="mini-nav next" aria-label="Next">›</button>
+            <div class="carousel-fade-right"></div>
         </div>
-        <div id="talks-list" class="timeline-grid"></div>
     </section>
 
-    <section id="publications">
+    <!-- Media & Workshops - Clean text list with tabs -->
+    <section id="media-workshops">
         <div class="container">
-            <div class="section-header">
-                <h2>Publications</h2>
-                <a href="#publications-full" class="more-link">More in Publications ›</a>
+            <h2 class="section-title">Media & Workshops</h2>
+            <div class="section-tabs">
+                <button class="section-tab active" data-tab="latest">Latest</button>
+                <span class="tab-divider">·</span>
+                <button class="section-tab" data-tab="archive">Archive</button>
             </div>
+            <div id="text-list" class="text-list"></div>
         </div>
-        <div id="publications-list" class="magazine-stack"></div>
     </section>
 
-    <section id="media">
+    <!-- Hidden old media section -->
+    <!-- Footer with CV toggle -->
+    <footer id="about">
         <div class="container">
-            <div class="section-header">
-                <h2>Media</h2>
-                <a href="#media-full" class="more-link">More in Media ›</a>
-            </div>
-            <div class="media-tabs">
-                <button class="media-tab active">Latest</button>
-                <span class="tab-divider"></span>
-                <button class="media-tab">Archive</button>
-            </div>
-        </div>
-        <div id="media-list" class="container"></div>
-    </section>
-
-    <section id="about">
-        <div class="container">
-            <div class="about-hero">
-                <div class="about-text">
-                    <p class="bio-main">
-                        <span class="bio-role" id="rotating-role">Urban Researcher</span> based in Boston.
-                    </p>
-                    <p class="bio-tagline">Available for projects, collaborations and consulting.</p>
-                    <p class="bio-secondary">Born in Madrid, trained as an architect and computational designer at the Polytechnic University of Madrid. Spent years working on how technology can make cities more human. Now a PhD researcher at MIT Media Lab's City Science group.</p>
-                    
-                    <div class="about-contact">
-                        <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
-                        <div class="about-social">
-                            <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
-                            <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
-                            <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Scholar</a>
-                            <a href="https://wa.me/1234567890" target="_blank">WhatsApp</a>
-                        </div>
+            <div class="footer-main">
+                <div class="footer-left">
+                    <p class="footer-copy">&copy; 2025 Leticia Izquierdo</p>
+                    <button class="cv-toggle" id="cv-toggle">
+                        <span>CV</span>
+                        <span class="cv-toggle-icon">+</span>
+                    </button>
+                </div>
+                <div class="footer-right">
+                    <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
+                        <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
+                        <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Scholar</a>
                     </div>
                 </div>
             </div>
-
-            <div class="about-grid">
-                <div class="education">
-                    <h3>Education</h3>
-                    <div id="education-list"></div>
+            
+            <!-- Collapsible CV -->
+            <div class="cv-content" id="cv-content">
+                <div class="cv-grid cv-grid-2">
+                    <div class="cv-column">
+                        <h4>Education</h4>
+                        <div id="education-list"></div>
+                    </div>
+                    <div class="cv-column">
+                        <h4>Experience</h4>
+                        <div id="experience-list"></div>
+                    </div>
                 </div>
-                <div class="experience">
-                    <h3>Experience</h3>
-                    <div id="experience-list"></div>
-                </div>
-                <div class="awards">
-                    <h3>Awards</h3>
-                    <div id="awards-list"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Leticia Izquierdo</p>
-            <div class="social-links">
-                <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
-                <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
-                <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Google Scholar</a>
-                <a href="https://wa.me/34600588498" target="_blank">WhatsApp</a>
-                <a href="mailto:leticiai@mit.edu">Email</a>
             </div>
         </div>
     </footer>
