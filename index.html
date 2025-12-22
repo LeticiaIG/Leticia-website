@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leticia Izquierdo - Urban Design & Technology</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Leticia Izquierdo</div>
+            <ul class="nav-links">
+                <li><a href="#works">Work</a></li>
+                <li><a href="#talks">Talks</a></li>
+                <li><a href="#publications">Publications</a></li>
+                <li><a href="#about">About</a></li>
+                <li class="lang-toggle"><a href="#" id="lang-switch">ES</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Slider -->
+    <section id="hero-slider">
+        <div class="slider-container">
+            <div class="slides">
+                <div class="slide active">
+                    <img src="Images/Intro/Intro.jpg" alt="Urban Design">
+                </div>
+                <div class="slide">
+                    <img src="Images/Intro/IMG_0011.png" alt="Architecture">
+                </div>
+                <div class="slide">
+                    <img src="Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png" alt="City Science">
+                </div>
+            </div>
+            
+            <!-- Navigation Arrows -->
+            <button class="slider-arrow prev" aria-label="Previous slide">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15,18 9,12 15,6"></polyline>
+                </svg>
+            </button>
+            <button class="slider-arrow next" aria-label="Next slide">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+            </button>
+            
+            <!-- Slide Indicators -->
+            <div class="slider-indicators">
+                <button class="indicator active" data-slide="0"></button>
+                <button class="indicator" data-slide="1"></button>
+                <button class="indicator" data-slide="2"></button>
+            </div>
+        </div>
+    </section>
+
+    <section id="works">
+        <div class="container">
+            <div class="section-header">
+                <h2>Selected Works</h2>
+                <a href="#works-full" class="more-link">More in Works ›</a>
+            </div>
+        </div>
+        <div id="works-grid" class="project-grid"></div>
+    </section>
+
+    <section id="talks">
+        <div class="container">
+            <div class="section-header">
+                <h2>Talks & Workshops</h2>
+                <a href="#talks-full" class="more-link">More in Talks ›</a>
+            </div>
+        </div>
+        <div id="talks-list" class="timeline-grid"></div>
+    </section>
+
+    <section id="publications">
+        <div class="container">
+            <div class="section-header">
+                <h2>Publications</h2>
+                <a href="#publications-full" class="more-link">More in Publications ›</a>
+            </div>
+        </div>
+        <div id="publications-list" class="magazine-stack"></div>
+    </section>
+
+    <section id="media">
+        <div class="container">
+            <div class="section-header">
+                <h2>Media</h2>
+                <a href="#media-full" class="more-link">More in Media ›</a>
+            </div>
+            <div class="media-tabs">
+                <button class="media-tab active">Latest</button>
+                <span class="tab-divider"></span>
+                <button class="media-tab">Archive</button>
+            </div>
+        </div>
+        <div id="media-list" class="container"></div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <div class="about-hero">
+                <div class="about-text">
+                    <p class="bio-main">
+                        <span class="bio-role" id="rotating-role">Urban Researcher</span> based in Boston.
+                    </p>
+                    <p class="bio-tagline">Available for talks, collaborations and consulting.</p>
+                    <p class="bio-secondary">Born in Madrid, trained as an architect and computational designer at UPM — Polytechnic University of Madrid. Spent years working on how technology can make cities more human. Now a PhD researcher at MIT Media Lab's City Science group.</p>
+                    
+                    <div class="about-contact">
+                        <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
+                        <div class="about-social">
+                            <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
+                            <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
+                            <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Scholar</a>
+                            <a href="https://wa.me/1234567890" target="_blank">WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-grid">
+                <div class="education">
+                    <h3>Education</h3>
+                    <div id="education-list"></div>
+                </div>
+                <div class="experience">
+                    <h3>Experience</h3>
+                    <div id="experience-list"></div>
+                </div>
+                <div class="awards">
+                    <h3>Awards</h3>
+                    <div id="awards-list"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Leticia Izquierdo</p>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
+                <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
+                <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Google Scholar</a>
+                <a href="https://wa.me/1234567890" target="_blank">WhatsApp</a>
+                <a href="mailto:leticiai@mit.edu">Email</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
