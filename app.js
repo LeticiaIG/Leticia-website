@@ -252,27 +252,76 @@ document.addEventListener('DOMContentLoaded', async () => {
 const WORK_IMAGES = {
   'PIX Moving': 'Images/PIX.png',
   'Urban Robot': 'Images/PIX.png',
+  'Rebuild the City with Autonomous Mobility': 'Images/PIX.png',
+  'Ghaf Woods': 'Images/Ghafs.jpg',
+  'Ghaf': 'Images/Ghafs.jpg',
   'Gastronomy': 'Images/gastronomy.png',
   'gastronomy': 'Images/gastronomy.png',
+  'Carbon': 'Images/20241116_NAHM_AM_146.png',
+  'Neighborhood-Scale': 'Images/20241116_NAHM_AM_146.png',
+  'Affordable Housing': 'Images/Doshi.jpg',
+  'Displaced Communities': 'Images/Doshi.jpg',
   // Añade más: 'Nombre del proyecto': 'Images/imagen.jpg'
 };
 
+// Featured works - most impactful urban planning & design projects
+const FEATURED_WORKS = [
+  'Ghaf Woods',
+  'Canopy',
+  'Carbon',
+  'Neighborhood-Scale',
+  'Urban AI',
+  'Zoning',
+  'Autonomous Mobility',
+  'PIX Moving',
+  'Gastronomy',
+  'Affordable Housing',
+  'Climate',
+  'Generative',
+  'City Science',
+  'Smart City',
+  'Data-Driven'
+];
+
 function renderWorks(works) {
   const container = document.getElementById('works-grid');
-  works.sort((a, b) => b.year - a.year);
   
-  // Apply local image mappings
+  // Sort: featured first, then by year, then by having image
+  works.sort((a, b) => {
+    const aFeatured = FEATURED_WORKS.some(fw => a.title?.includes(fw));
+    const bFeatured = FEATURED_WORKS.some(fw => b.title?.includes(fw));
+    const aHasImage = a.image && !a.image.includes('placeholder');
+    const bHasImage = b.image && !b.image.includes('placeholder');
+    
+    // Featured projects first
+    if (aFeatured && !bFeatured) return -1;
+    if (!aFeatured && bFeatured) return 1;
+    
+    // Then projects with images
+    if (aHasImage && !bHasImage) return -1;
+    if (!aHasImage && bHasImage) return 1;
+    
+    // Then by year (most recent first)
+    return b.year - a.year;
+  });
+
+  // Apply local image mappings (only if CSV doesn't have a valid image)
   works = works.map(work => {
-    const localImage = Object.keys(WORK_IMAGES).find(key => 
-      work.title?.includes(key) || work.institution?.includes(key)
-    );
-    if (localImage) {
-      work.image = WORK_IMAGES[localImage];
+    // Si ya tiene una imagen válida del CSV, no la sobreescribimos
+    const hasValidCsvImage = work.image && !work.image.includes('placeholder');
+    
+    if (!hasValidCsvImage) {
+      const localImage = Object.keys(WORK_IMAGES).find(key => 
+        work.title?.includes(key) || work.institution?.includes(key)
+      );
+      if (localImage) {
+        work.image = WORK_IMAGES[localImage];
+      }
     }
     return work;
   });
   
-  const VISIBLE_COUNT = 12; // 3 rows of 4
+  const VISIBLE_COUNT = 9; // 3 rows of 3 or similar
   const hasMore = works.length > VISIBLE_COUNT;
   
   function renderWorkCards(worksToRender) {
@@ -299,10 +348,20 @@ function renderWorks(works) {
       const isDoubled = doubleIndices.has(index);
       const isDarkCard = index % 5 === 4;
       
+      // Use tags from CSV if available, otherwise use type (if not Project)
+      let badgeText = '';
+      if (work.tags && work.tags.trim()) {
+        badgeText = work.tags.trim();
+      } else if (work.type && work.type !== 'Project') {
+        badgeText = work.type;
+      }
+      const typeTag = badgeText ? `<span class="type-badge">${badgeText}</span>` : '';
+      
       if (isDoubled && hasImage) {
         html += `
           <div class="project-card text-card">
             <div class="project-content">
+              ${typeTag}
               <h3>${work.title}</h3>
               ${work.description ? `<p class="description">${work.description}</p>` : ''}
             </div>
@@ -324,12 +383,21 @@ function renderWorks(works) {
       } else if (hasImage) {
         html += `
           <div class="project-card image-card">
-            <div class="project-image">
+      <div class="project-image">
               <img src="${work.image}" alt="${work.title}" onerror="this.parentElement.parentElement.classList.add('text-card'); this.parentElement.remove();">
-            </div>
-            <div class="group-badge">
-              <span>City Science</span>
-            </div>
+      </div>
+            <div class="project-overlay">
+      <div class="project-content">
+                ${typeTag}
+        <h3>${work.title}</h3>
+                ${work.description ? `<p class="description">${work.description}</p>` : ''}
+              </div>
+              <div class="project-meta">
+                <p class="date">${work.year}</p>
+        <p class="institution">${work.institution}</p>
+      </div>
+    </div>
+            ${work.link ? `<a href="${work.link}" target="_blank" class="card-link"></a>` : ''}
           </div>
         `;
       } else {
@@ -338,6 +406,7 @@ function renderWorks(works) {
         html += `
           <div class="project-card ${cardClass}">
             <div class="project-content">
+              ${typeTag}
               <h3>${work.title}</h3>
               ${work.description ? `<p class="description">${work.description}</p>` : ''}
             </div>
@@ -374,8 +443,9 @@ function renderWorks(works) {
 
 // Mapping de imágenes locales para talks específicos
 const TALK_IMAGES = {
-  'Community Carbon Impact Calculator': 'Images/bubble.png',
-  'NYC Climate Week': 'Images/bubble.png'
+  'Community Carbon Impact Calculator': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
+  'NYC Climate Week': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
+  'Carbon': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png'
 };
 
 function renderTalks(talks) {
@@ -413,15 +483,15 @@ function renderTalks(talks) {
       
       return `
         <div class="timeline-item ${imageClass}" ${imageStyle}>
-          <span class="type-badge">${talk.type}</span>
-          <h3>${talk.title}</h3>
-          <p class="institution">${talk.institution}</p>
-          ${talk.description ? `<p class="description">${talk.description}</p>` : ''}
+        <span class="type-badge">${talk.type}</span>
+        <h3>${talk.title}</h3>
+        <p class="institution">${talk.institution}</p>
+        ${talk.description ? `<p class="description">${talk.description}</p>` : ''}
           <div class="meta">
             ${talk.location ? `${talk.location} · ` : ''}${talk.year}
             ${talk.link ? `<br><a href="${talk.link}" target="_blank">View →</a>` : ''}
-          </div>
-        </div>
+      </div>
+    </div>
       `;
     }).join('');
   }
@@ -492,10 +562,10 @@ function renderPublications(publications) {
         <article class="magazine-card text-only" ${pub.link ? `onclick="window.open('${pub.link}', '_blank')"` : ''}>
           <div class="magazine-bg">
             <p class="pub-title-large">${pub.title}</p>
-          </div>
+      </div>
           <div class="pub-info">
             <p class="pub-date">${pub.journal ? `${pub.journal} · ` : ''}${pub.year}</p>
-          </div>
+    </div>
         </article>
       `;
     }
@@ -579,7 +649,7 @@ function renderMedia(media) {
   const container = document.getElementById('media-list');
   container.className = 'media-nyt';
   media.sort((a, b) => b.year - a.year);
-  
+
   const LATEST_COUNT = 4;
   const latestMedia = media.slice(0, LATEST_COUNT);
   const archiveMedia = media.slice(LATEST_COUNT);
@@ -594,11 +664,11 @@ function renderMedia(media) {
             <h3>${item.link ? `<a href="${item.link}" target="_blank">${item.title}</a>` : item.title}</h3>
             ${item.description ? `<p class="media-desc">${item.description}</p>` : ''}
             <p class="media-author">By ${item.outlet.toUpperCase()}</p>
-          </div>
+      </div>
           ${mediaImage ? `
             <div class="media-thumb">
               <img src="${mediaImage}" alt="${item.title}">
-            </div>
+    </div>
           ` : ''}
         </article>
       `;
@@ -635,7 +705,7 @@ function renderAwards(awards) {
       <span class="year">${award.year}</span>
       <div>
         <h4>${award.title}</h4>
-        <p class="institution">${award.institution}</p>
+      <p class="institution">${award.institution}</p>
       </div>
     </div>
   `).join('');
@@ -649,8 +719,8 @@ function renderAbout(about) {
     <div class="education-item">
       <span class="year">${edu.year}</span>
       <div>
-        <h4>${edu.degree}</h4>
-        <p class="institution">${edu.institution}</p>
+      <h4>${edu.degree}</h4>
+      <p class="institution">${edu.institution}</p>
       </div>
     </div>
   `).join('');
@@ -662,8 +732,8 @@ function renderAbout(about) {
     <div class="experience-item">
       <span class="year">${exp.year}</span>
       <div>
-        <h4>${exp.role}</h4>
-        <p class="institution">${exp.institution}</p>
+      <h4>${exp.role}</h4>
+      <p class="institution">${exp.institution}</p>
       </div>
     </div>
   `).join('');

@@ -5,6 +5,8 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nR
 
 const CATEGORY_MAPPING = {
   'Project': 'works',
+  'Exhibition': 'works',
+  'Exhibit': 'works',
   'Talk': 'talks',
   'Workshop': 'talks',
   'Publication': 'publications',
@@ -67,13 +69,19 @@ function parseCSVLine(line) {
 
 // Función para obtener la URL de imagen desde la columna del CSV
 function getProjectImage(entry) {
-  // Primero intenta leer de Image_URL o Images_link
-  if (entry.Image_URL && entry.Image_URL.trim()) {
-    return entry.Image_URL.trim();
+  // Buscar la imagen en varias posibles columnas del CSV
+  const imageFields = [
+    'Image_URL', 'Image URL', 'ImageURL', 'image_url', 'image url',
+    'Images_link', 'Images link', 'Image', 'image', 'Imagen', 'imagen',
+    'Media_URL', 'Media URL', 'Photo', 'photo', 'Picture', 'picture'
+  ];
+  
+  for (const field of imageFields) {
+    if (entry[field] && entry[field].trim()) {
+      return entry[field].trim();
+    }
   }
-  if (entry.Images_link && entry.Images_link.trim()) {
-    return entry.Images_link.trim();
-  }
+  
   // Si no hay imagen, retorna una imagen placeholder
   return 'images/placeholder.jpg';
 }
@@ -101,13 +109,15 @@ async function loadCVData() {
       if (category === 'works') {
         organizedData.works.push({
           year: entry.Year,
+          type: entry.Type,
           title: entry.Title,
           location: [entry.City, entry.Country].filter(Boolean).join(', '),
           institution: entry.Institution,
           collaborators: entry.Collaborators,
           description: entry.Description,
           link: entry.Link,
-          image: getProjectImage(entry)
+          image: getProjectImage(entry),
+          tags: entry.Tags || entry.Tag || ''
         });
       } else if (category === 'talks') {
         organizedData.talks.push({
@@ -129,7 +139,8 @@ async function loadCVData() {
           journal: entry.Institution,
           authors: entry.Collaborators,
           link: entry.Link,
-          description: entry.Description
+          description: entry.Description,
+          image: getProjectImage(entry)
         });
       } else if (category === 'media') {
         organizedData.media.push({
@@ -137,7 +148,8 @@ async function loadCVData() {
           title: entry.Title,
           outlet: entry.Institution,
           link: entry.Link,
-          description: entry.Description
+          description: entry.Description,
+          image: getProjectImage(entry)
         });
       } else if (category === 'awards') {
         organizedData.awards.push({
