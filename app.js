@@ -669,9 +669,10 @@ function renderVisualCarousel(publications, talks) {
           </div>
         ` : ''}
         <div class="visual-card-overlay">
+          <span class="visual-card-tag">${item.itemType.toUpperCase()}</span>
           <span class="visual-card-year">${item.year}</span>
           <h3 class="visual-card-title">${item.title}</h3>
-          <p class="visual-card-venue">${item.venue || item.itemType}</p>
+          <p class="visual-card-venue">${item.venue || ''}</p>
         </div>
         ${item.link ? `<a href="${item.link}" target="_blank" class="visual-card-link"></a>` : ''}
       </article>
