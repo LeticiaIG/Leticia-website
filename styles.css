@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+/* Norman Foster Style: Clean, Technical, Minimal */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 * {
     margin: 0;
@@ -7,16 +8,20 @@
 }
 
 :root {
-    --bg-light: #f8f7fa;
+    --bg-light: #fafafa;
     --bg-dark: #0a0a0a;
+    --bg-dark-alt: #111111;
     --text-dark: #0a0a0a;
     --text-light: #ffffff;
-    --text-muted: #888888;
+    --text-muted: #666666;
+    --text-subtle: #444444;
     --accent: #e63946;
     --accent-red: #e63946;
     --accent-blue: #457b9d;
-    --border: #222222;
-    --gradient: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
+    --border: #1a1a1a;
+    --border-light: rgba(255,255,255,0.08);
+    --gradient: linear-gradient(135deg, #e63946 0%, #457b9d 100%);
+    --section-gap: 8rem;
 }
 
 body {
@@ -37,38 +42,35 @@ header {
     transition: background 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* Default state: White text over dark slider images */
+/* Foster Style: Clean technical typography */
 header .logo {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    background: linear-gradient(135deg, #e63946 0%, #c44569 30%, #7b68a6 60%, #457b9d 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: none;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: white;
     transition: all 0.4s ease;
+}
+
+header .logo:hover {
+    color: var(--accent-red);
 }
 
 header .nav-links a {
     text-decoration: none;
-    color: white;
-    font-family: 'Source Serif 4', Georgia, serif;
+    color: rgba(255,255,255,0.7);
+    font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 400;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
     transition: all 0.3s ease;
-    padding-bottom: 2px;
+    padding-bottom: 4px;
     border-bottom: 1px solid transparent;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.3);
 }
 
 header .nav-links a:hover,
 header .nav-links a.active {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--accent-red);
     border-bottom: 1px solid var(--accent-red);
 }
 
@@ -97,10 +99,7 @@ header.scrolled {
 }
 
 header.scrolled .logo {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: white;
 }
 
 /* Gradient text utility */
@@ -118,10 +117,7 @@ header.scrolled .nav-links a {
 
 header.scrolled .nav-links a:hover,
 header.scrolled .nav-links a.active {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--accent-red);
     border-bottom-color: var(--accent-red);
 }
 
@@ -182,40 +178,39 @@ nav {
     justify-content: center;
 }
 
-/* Cloud-like breathing bubble */
+/* Foster Style: Subtle ambient glow - very minimal */
 .cloud-bubble {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 700px;
-    height: 700px;
-    filter: blur(50px);
+    width: 800px;
+    height: 800px;
+    filter: blur(120px);
     mix-blend-mode: screen;
-    opacity: 0.9;
-    animation: cloudBreathe 6s ease-in-out infinite, cloudMorph 12s ease-in-out infinite;
-    background: 
-        radial-gradient(ellipse 80% 60% at 30% 40%, rgba(230, 57, 70, 1) 0%, transparent 50%),
-        radial-gradient(ellipse 70% 80% at 70% 60%, rgba(69, 123, 157, 0.9) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 70% at 50% 50%, rgba(123, 104, 166, 0.8) 0%, transparent 60%);
+    opacity: 0.15;
+    animation: subtleGlow 20s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(230, 57, 70, 0.5) 0%, transparent 70%);
 }
 
-/* Secondary cloud layer for depth */
+/* Secondary glow - barely visible */
 .cloud-bubble-2 {
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 60%;
     transform: translate(-50%, -50%);
-    width: 550px;
-    height: 550px;
-    filter: blur(70px);
+    width: 600px;
+    height: 600px;
+    filter: blur(150px);
     mix-blend-mode: screen;
-    opacity: 0.7;
-    animation: cloudBreathe 8s ease-in-out infinite reverse, cloudMorph 15s ease-in-out infinite reverse;
-    animation-delay: -2s;
-    background: 
-        radial-gradient(ellipse 70% 50% at 60% 40%, rgba(196, 69, 105, 0.9) 0%, transparent 50%),
-        radial-gradient(ellipse 50% 70% at 40% 60%, rgba(100, 130, 180, 0.8) 0%, transparent 50%);
+    opacity: 0.1;
+    animation: subtleGlow 25s ease-in-out infinite reverse;
+    background: radial-gradient(circle, rgba(69, 123, 157, 0.5) 0%, transparent 70%);
+}
+
+@keyframes subtleGlow {
+    0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
 }
 
 /* Hide individual blobs - using cloud instead */
@@ -334,7 +329,7 @@ nav {
 }
 
 .hero-about-overlay .bio-main {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 2.5rem;
     font-weight: 400;
     line-height: 1.2;
@@ -377,9 +372,7 @@ nav {
 }
 
 .hero-about-overlay .contact-btn:hover {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent-red);
     border-color: var(--accent-red);
 }
 
@@ -405,7 +398,7 @@ nav {
 
 /* Slide About - Uses same classes as #about section */
 .slide-about-content .bio-main {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 2.5rem;
     font-weight: 400;
     line-height: 1.2;
@@ -428,7 +421,7 @@ nav {
 }
 
 .slide-about-content .bio-tagline {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.5rem;
     font-weight: 400;
     color: rgba(255,255,255,0.7);
@@ -586,7 +579,7 @@ section {
 }
 
 section h2 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
@@ -653,7 +646,7 @@ section h2 {
 }
 
 .work-card-title {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.5rem;
     font-weight: 600;
     color: white;
@@ -750,7 +743,13 @@ section h2 {
     aspect-ratio: 4/3;
     overflow: hidden;
     cursor: pointer;
-    background: var(--bg-dark);
+    background: var(--bg-dark-alt);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
 .project-card .project-image {
@@ -777,39 +776,62 @@ section h2 {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 2rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+    padding: 1.5rem 2rem 2rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0.4) 80%, transparent 100%);
     z-index: 2;
 }
 
-/* Year on top with gradient color */
+/* Year on top - Foster style: clean accent */
 .project-card .project-year {
     display: block;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     letter-spacing: 0.15em;
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent-red);
     margin-bottom: 0.75rem;
 }
 
 /* Title - large and prominent */
 .project-card .project-title {
-    font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 400;
     color: white;
-    line-height: 1.25;
+    line-height: 1.3;
     margin-bottom: 0.5rem;
 }
 
-/* Venue/Institution below title */
-.project-card .project-label {
-    display: block;
+/* Short description - Foster style */
+.project-card .project-desc {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    max-width: 90%;
+}
+
+/* Collaborators - subtle italic */
+.project-card .project-collab {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    font-style: italic;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 0.75rem;
+}
+
+/* Type label below description */
+.project-card .project-label {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-red);
+    opacity: 0.8;
 }
 
 .project-card .card-link {
@@ -884,7 +906,7 @@ section h2 {
 
 .project-card.image-card .project-content h3 {
     color: white;
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.4rem;
     font-weight: 700;
     line-height: 1.25;
@@ -1054,7 +1076,7 @@ section h2 {
 }
 
 .project-content h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.4rem;
     font-weight: 700;
     line-height: 1.25;
@@ -1165,7 +1187,7 @@ section h2 {
 }
 
 .timeline-item h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.3;
@@ -1284,7 +1306,7 @@ section h2 {
 }
 
 .award-card h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.1rem;
     font-weight: 700;
     line-height: 1.3;
@@ -1310,9 +1332,7 @@ section h2 {
 }
 
 .about-contact-footer .about-social a:hover {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent-red);
 }
 
 #about h2 {
@@ -1340,7 +1360,7 @@ section h2 {
 }
 
 .about-text .bio-main {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 2.5rem;
     font-weight: 400;
     line-height: 1.2;
@@ -1363,7 +1383,7 @@ section h2 {
 }
 
 .about-text .bio-tagline {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.5rem;
     font-weight: 400;
     color: rgba(255,255,255,0.7);
@@ -1650,7 +1670,7 @@ section h2 {
 }
 
 .talk-title {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.1rem;
     font-weight: 500;
     color: white;
@@ -1812,7 +1832,7 @@ section h2 {
 }
 
 .blog-post-title {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     line-height: 1.3;
@@ -1875,10 +1895,11 @@ section h2 {
 
 /* Footer - Brutalist */
 footer {
-    background: #111111;
+    background: var(--bg-dark);
     color: white;
-    padding: 3rem 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: var(--section-gap) 0 4rem;
+    border-top: 1px solid var(--border-light);
+    margin-top: 4rem;
 }
 
 footer .container {
@@ -2092,7 +2113,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .more-link {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 0.95rem;
     color: rgba(255,255,255,0.5);
     text-decoration: none;
@@ -2124,17 +2145,19 @@ footer .cv-toggle.active .cv-toggle-icon {
 #publications .section-header,
 #talks .section-header,
 #works {
-    padding: 4rem 0;
+    padding: var(--section-gap) 0 calc(var(--section-gap) * 1.5);
     background: var(--bg-dark);
+    border-top: 1px solid var(--border-light);
 }
 
 /* Project Grid - 3x2 rectangular layout */
 .project-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
+    gap: 1.5rem;
     max-width: 1400px;
     margin: 0 auto;
+    padding: 0 2rem;
 }
 
 /* View all projects link */
@@ -2152,9 +2175,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .view-all-link:hover {
-    background: var(--gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--accent-red);
 }
 
 /* ================================
@@ -2213,7 +2234,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .talk-content h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.1rem;
     font-weight: 600;
     line-height: 1.3;
@@ -2262,7 +2283,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 .media-tab {
     background: none;
     border: none;
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
         font-size: 0.9rem;
     font-weight: 600;
     color: rgba(255,255,255,0.4);
@@ -2347,7 +2368,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .media-body h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.1rem;
     font-weight: 500;
     line-height: 1.35;
@@ -2422,8 +2443,8 @@ footer .cv-toggle.active .cv-toggle-icon {
    ================================ */
 #publications {
     background: var(--bg-dark);
-    padding: 6rem 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: var(--section-gap) 0;
+    border-top: 1px solid var(--border-light);
 }
 
 #publications .container {
@@ -2472,7 +2493,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .pm-content h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.05rem;
     font-weight: 500;
     color: white;
@@ -2671,7 +2692,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 
 /* Title - Main focus, 2-3 lines max */
 .visual-card-title {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.35rem;
     font-weight: 500;
     color: white;
@@ -2732,8 +2753,8 @@ footer .cv-toggle.active .cv-toggle-icon {
    ================================ */
 #media-workshops {
     background: var(--bg-dark);
-    padding: 6rem 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: var(--section-gap) 0;
+    border-top: 1px solid var(--border-light);
 }
 
 #media-workshops .container {
@@ -2822,7 +2843,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .tl-content h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.05rem;
     font-weight: 500;
     color: white;
@@ -2937,7 +2958,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .pub-card .pub-title {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.05rem;
     font-weight: 500;
     color: white;
@@ -3075,7 +3096,7 @@ footer .cv-toggle.active .cv-toggle-icon {
 }
 
 .compact-item .content h3 {
-    font-family: 'Source Serif 4', Georgia, serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 0.85rem;
     font-weight: 400;
     color: white;

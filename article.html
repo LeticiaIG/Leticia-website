@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - Leticia Izquierdo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+    <style>
+        .article-page {
+            background: #0a0a0a;
+            min-height: 100vh;
+        }
+        
+        .article-header {
+            padding: 8rem 0 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .article-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(200,50,50,0.1) 0%, transparent 50%, rgba(50,100,200,0.1) 100%);
+            z-index: 0;
+        }
+        
+        .article-header .container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+        
+        .article-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s;
+        }
+        
+        .article-back:hover {
+            color: var(--accent-red);
+        }
+        
+        .article-page-title {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 3rem;
+            font-weight: 400;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        
+        .article-page-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .article-page-date {
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .article-page-tags {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .article-page-tag {
+            padding: 0.3rem 0.6rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+        }
+        
+        .article-body-section {
+            padding: 4rem 0;
+        }
+        
+        .article-body-section .container {
+            max-width: 720px;
+        }
+        
+        .article-content-body {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.2rem;
+            line-height: 1.9;
+            color: rgba(255,255,255,0.85);
+        }
+        
+        .article-content-body p {
+            margin-bottom: 1.8rem;
+        }
+        
+        .article-content-body h2 {
+            font-size: 1.6rem;
+            color: white;
+            margin: 3rem 0 1.5rem;
+        }
+        
+        .article-content-body blockquote {
+            border-left: 3px solid var(--accent-red);
+            padding-left: 1.5rem;
+            margin: 2.5rem 0;
+            font-style: italic;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .article-content-body a {
+            color: var(--accent-red);
+            text-decoration: underline;
+        }
+        
+        .article-loading {
+            text-align: center;
+            padding: 4rem;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .article-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-top-color: var(--accent-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .article-footer {
+            padding: 4rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .article-footer .container {
+            max-width: 720px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .article-share {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .article-share a {
+            color: rgba(255,255,255,0.5);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .article-share a:hover {
+            color: var(--accent-red);
+        }
+        
+        @media (max-width: 768px) {
+            .article-page-title {
+                font-size: 2rem;
+            }
+            
+            .article-content-body {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body class="article-page">
+    <header>
+        <nav>
+            <a href="index.html" class="logo">Leticia Izquierdo</a>
+            <ul class="nav-links">
+                <li><a href="index.html#works">Works</a></li>
+                <li><a href="index.html#publications">Publications</a></li>
+                <li><a href="index.html#media-workshops">Media</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="index.html#about">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="article-header">
+            <div class="container">
+                <a href="blog.html" class="article-back">← Back to Blog</a>
+                <h1 class="article-page-title" id="article-title">Loading...</h1>
+                <div class="article-page-meta">
+                    <span class="article-page-date" id="article-date"></span>
+                    <div class="article-page-tags" id="article-tags"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="article-body-section">
+            <div class="container">
+                <div class="article-content-body" id="article-body">
+                    <div class="article-loading">
+                        <div class="article-loading-spinner"></div>
+                        <p>Loading article...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="article-footer">
+            <div class="container">
+                <a href="blog.html" class="article-back">← Back to Blog</a>
+                <div class="article-share">
+                    <a href="#" id="share-twitter">Share on Twitter</a>
+                    <a href="#" id="share-linkedin">Share on LinkedIn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-main">
+                <p class="footer-copy">&copy; 2025 Leticia Izquierdo</p>
+                <div class="social-links">
+                    <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
+                    <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
+                    <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Scholar</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script>
+        // Get article ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = parseInt(urlParams.get('id')) || 1;
+        
+        // Blog CSV URL
+        const BLOG_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nRNvW0kxwWMwaScflXuMKo6SxkAChyLMuI-dOzFOGj_ysPQnnPsmel9UO6QEudePYtJ_ZAYjjNU/pub?gid=1893322321&single=true&output=csv';
+        
+        // Parse CSV line
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current);
+            return result;
+        }
+        
+        // Load and display article
+        async function loadArticle() {
+            try {
+                const response = await fetch(BLOG_URL);
+                const text = await response.text();
+                const lines = text.split('\n').filter(line => line.trim());
+                
+                if (lines.length < 2) {
+                    showError();
+                    return;
+                }
+                
+                const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase().replace(/\s+/g, '_'));
+                
+                // Find the article
+                if (articleId >= lines.length) {
+                    showError();
+                    return;
+                }
+                
+                const values = parseCSVLine(lines[articleId]);
+                const post = {};
+                headers.forEach((header, index) => {
+                    post[header] = values[index]?.trim() || '';
+                });
+                
+                // Update page
+                document.title = `${post.title} - Leticia Izquierdo`;
+                document.getElementById('article-title').textContent = post.title;
+                document.getElementById('article-date').textContent = post.date;
+                
+                // Tags
+                const tagsContainer = document.getElementById('article-tags');
+                if (post.tags) {
+                    tagsContainer.innerHTML = post.tags.split(',')
+                        .map(tag => `<span class="article-page-tag">${tag.trim()}</span>`)
+                        .join('');
+                }
+                
+                // Load content from Google Doc
+                if (post.google_doc_url) {
+                    await loadGoogleDocContent(post.google_doc_url, post.excerpt);
+                } else {
+                    document.getElementById('article-body').innerHTML = `<p>${post.excerpt}</p>`;
+                }
+                
+                // Share links
+                const pageUrl = encodeURIComponent(window.location.href);
+                const pageTitle = encodeURIComponent(post.title);
+                document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+                document.getElementById('share-linkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
+                
+            } catch (error) {
+                console.error('Error loading article:', error);
+                showError();
+            }
+        }
+        
+        // Load Google Doc content
+        async function loadGoogleDocContent(docUrl, fallbackExcerpt) {
+            try {
+                // Try to fetch the published Google Doc
+                const response = await fetch(docUrl);
+                const html = await response.text();
+                
+                // Extract content from Google Doc HTML
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Get the main content
+                const content = doc.querySelector('#contents') || doc.body;
+                
+                if (content) {
+                    // Clean up the content
+                    let articleHtml = content.innerHTML;
+                    
+                    // Remove Google styling
+                    articleHtml = articleHtml.replace(/style="[^"]*"/g, '');
+                    articleHtml = articleHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+                    
+                    document.getElementById('article-body').innerHTML = articleHtml;
+                } else {
+                    document.getElementById('article-body').innerHTML = `<p>${fallbackExcerpt}</p>`;
+                }
+            } catch (error) {
+                console.error('Error loading Google Doc:', error);
+                // Fallback to excerpt
+                document.getElementById('article-body').innerHTML = `
+                    <p>${fallbackExcerpt}</p>
+                    <p style="margin-top: 2rem;">
+                        <a href="${docUrl}" target="_blank" style="color: var(--accent-red);">
+                            Read full article on Google Docs →
+                        </a>
+                    </p>
+                `;
+            }
+        }
+        
+        function showError() {
+            document.getElementById('article-title').textContent = 'Article not found';
+            document.getElementById('article-body').innerHTML = `
+                <p>Sorry, this article could not be found.</p>
+                <p><a href="blog.html">← Back to Blog</a></p>
+            `;
+        }
+        
+        // Initialize
+        loadArticle();
+    </script>
+</body>
+</html>
+

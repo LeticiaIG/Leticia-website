@@ -12,7 +12,7 @@ const translations = {
     moreInTalks: 'More in Talks ›',
     moreInPubs: 'More in Publications ›',
     moreInMedia: 'More in Media ›',
-    latest: 'Latest',
+    latest: 'Highlights',
     archive: 'Archive',
     education: 'Education',
     experience: 'Experience',
@@ -491,8 +491,14 @@ function renderWorks(works) {
   function renderWorkCards(worksToRender) {
     return worksToRender.map(work => {
       const hasImage = work.image && !work.image.includes('placeholder');
-      const label = work.institution || work.type || '';
-      
+      const label = work.type || '';
+      const location = work.location || '';
+      // Truncate description to ~80 chars
+      const shortDesc = work.description 
+        ? (work.description.length > 80 
+            ? work.description.substring(0, 80).trim() + '...' 
+            : work.description)
+        : '';
       return `
         <article class="project-card ${hasImage ? 'has-image' : ''}">
           ${hasImage ? `
@@ -501,9 +507,10 @@ function renderWorks(works) {
             </div>
           ` : ''}
           <div class="project-info">
-            <span class="project-year">${work.year}</span>
+            <span class="project-year">${work.year}${location ? ` · ${location}` : ''}</span>
             <h3 class="project-title">${work.title}</h3>
-            <span class="project-label">${label}</span>
+            ${shortDesc ? `<p class="project-desc">${shortDesc}</p>` : ''}
+            ${label ? `<span class="project-label">${label}</span>` : ''}
           </div>
           ${work.link ? `<a href="${work.link}" target="_blank" class="card-link"></a>` : ''}
         </article>
@@ -534,7 +541,9 @@ function renderWorks(works) {
 const TALK_IMAGES = {
   'Community Carbon Impact Calculator': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
   'NYC Climate Week': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
-  'Carbon': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png'
+  'Carbon': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
+  'Affordable Housing Workshop': 'Images/Cities NFF.png',
+  'Scholar Presentation': 'Images/Cities NFF.png'
 };
 
 function renderTalks(talks) {
@@ -607,7 +616,9 @@ const PUB_IMAGES = {
   'Spanish Pavilion catalogue becoming Venice Architecture Biennale': 'Images/becoming.webp',
   'XIV Bienal Española de Arquitectura y Urbanismo': 'Images/bienale.jpg',
   'Neighborhood-Scale Carbon Emissions Impact': 'Images/catalog-open-ps-ExihbitX.png',
-  'Generative Agents': 'Images/adornetto1-3566362-small.gif'  // TODO: Replace with Gen-carlo when available
+  'Cities: Affordable Housing Workshop': 'Images/Cities NFF.png',
+  'Affordable Housing Workshop': 'Images/Cities NFF.png'
+  // 'Generative Agents' uses gradient background
 };
 
 // Default image for publications preview
@@ -643,8 +654,18 @@ function renderVisualCarousel(publications, talks) {
   
   const allItems = [...pubItems, ...talkItems];
   
-  // Sort by year (newest first)
-  allItems.sort((a, b) => b.year - a.year);
+  // Sort: prioritize items with images, then by year (newest first)
+  allItems.sort((a, b) => {
+    const aHasImage = a.image && !a.image.includes('placeholder');
+    const bHasImage = b.image && !b.image.includes('placeholder');
+    
+    // Items with images come first
+    if (aHasImage && !bHasImage) return -1;
+    if (bHasImage && !aHasImage) return 1;
+    
+    // Then sort by year (newest first)
+    return b.year - a.year;
+  });
   
   container.innerHTML = allItems.map(item => {
     const hasImage = item.image && !item.image.includes('placeholder');
@@ -751,13 +772,32 @@ function renderTextList(media, talks, awards = []) {
     ...awardItems
   ];
   
-  // Sort by year (newest first)
-  allItems.sort((a, b) => b.year - a.year);
+  // Sort by relevance: Awards first, then by year
+  allItems.sort((a, b) => {
+    // Priority: Award > Workshop > Media
+    const priority = { 'Award': 3, 'Workshop': 2, 'Media': 1 };
+    const aPriority = priority[a.itemType] || 0;
+    const bPriority = priority[b.itemType] || 0;
+    
+    // First by priority, then by year
+    if (aPriority !== bPriority) return bPriority - aPriority;
+    return b.year - a.year;
+  });
   
-  // Split into latest (5 items) and archive (rest)
-  const LATEST_COUNT = 5;
-  const latestItems = allItems.slice(0, LATEST_COUNT);
-  const archiveItems = allItems.slice(LATEST_COUNT);
+  // Latest: Mix of most relevant (2 awards, 2 media, 1 workshop if available)
+  const latestAwards = allItems.filter(i => i.itemType === 'Award').slice(0, 2);
+  const latestMedia = allItems.filter(i => i.itemType === 'Media').slice(0, 2);
+  const latestWorkshops = allItems.filter(i => i.itemType === 'Workshop').slice(0, 1);
+  
+  const latestItems = [...latestAwards, ...latestMedia, ...latestWorkshops]
+    .sort((a, b) => b.year - a.year)
+    .slice(0, 5);
+  
+  // Archive: Everything else
+  const latestIds = new Set(latestItems.map(i => i.title));
+  const archiveItems = allItems
+    .filter(i => !latestIds.has(i.title))
+    .sort((a, b) => b.year - a.year);
   
   function renderItems(items) {
     if (items.length === 0) {
@@ -898,7 +938,7 @@ function renderMedia(media) {
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       
-      if (tab.textContent === 'Latest') {
+      if (tab.textContent === 'Highlights') {
         container.innerHTML = renderArticles(latestMedia);
       } else {
         container.innerHTML = archiveMedia.length > 0 
