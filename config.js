@@ -6,6 +6,34 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nR
 // URL para la pestaña Socials (gid=1 para la segunda pestaña)
 const GOOGLE_SHEET_SOCIALS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nRNvW0kxwWMwaScflXuMKo6SxkAChyLMuI-dOzFOGj_ysPQnnPsmel9UO6QEudePYtJ_ZAYjjNU/pub?gid=1&single=true&output=csv';
 
+// ====================================
+// DROPBOX AUTO-LINK CONFIGURATION
+// ====================================
+// PASO 1: Comparte tu carpeta de Dropbox "Leticia-Website-Images"
+// PASO 2: Copia el link que te da Dropbox (algo como: https://www.dropbox.com/scl/fo/xxxxx/carpeta?rlkey=yyyy&dl=0)
+// PASO 3: Pega ese link aquí y cambia 'fo' por 'fi' y añade tu imagen al final:
+// RESULTADO: https://www.dropbox.com/scl/fi/xxxxx/NOMBRE-IMAGEN.jpg?rlkey=yyyy&dl=1
+
+// Configura tu carpeta base de Dropbox aquí:
+const DROPBOX_FOLDER_ID = 'zl1neuwyqe2yxl1y5bunp/AEu2OKgEpPUG5fvC2RSMbt0';  // El ID de tu carpeta compartida
+const DROPBOX_RLKEY = 'lo2s9jy1eb22tro6qvn86q7wt';   // La rlkey de tu carpeta compartida
+
+// Función para construir URL de Dropbox automáticamente
+function buildDropboxURL(filename, type = '') {
+  if (!filename) return '';
+  
+  // Si ya es una URL completa de Dropbox
+  if (filename.includes('http')) {
+    // Convertir dl=0 a dl=1 automáticamente para visualización directa
+    return filename.replace('dl=0', 'dl=1');
+  }
+  
+  // Fallback para construcción manual (por si acaso)
+  const url = `https://www.dropbox.com/scl/fo/${DROPBOX_FOLDER_ID}/${filename}?rlkey=${DROPBOX_RLKEY}&raw=1`;
+  console.log(`✅ Dropbox URL construida: ${url}`);
+  return url;
+}
+
 const CATEGORY_MAPPING = {
   'Project': 'works',
   'Exhibition': 'works',
@@ -33,33 +61,70 @@ const DEFAULT_HEADERS = ['Year', 'Type', 'Title', 'Institution', 'City', 'Countr
 
 // Función para parsear CSV manualmente
 function parseCSV(text) {
-  const lines = text.split('\n').filter(line => line.trim());
+  const lines = text.split('\n').filter(line => {
+    const trimmed = line.trim();
+    // Filter out empty lines, "Upcoming" lines, and lines with only commas
+    return trimmed && 
+           trimmed !== 'Upcoming' && 
+           !trimmed.match(/^,+$/) &&
+           trimmed.split(',').some(val => val.trim());
+  });
+  
   if (lines.length === 0) return [];
   
-  // Verificar si la primera línea es un header o datos
+  // Find header line (contains "Year,Type,Title")
+  let headerIndex = lines.findIndex(line => 
+    line.includes('Year') && line.includes('Type') && line.includes('Title')
+  );
+  
+  // If no header found at start, check if first line looks like data
   const firstLine = lines[0];
   const firstValue = parseCSVLine(firstLine)[0];
+  const firstLineIsData = /^\d{4}$/.test(firstValue?.trim());
   
-  // Si el primer valor es un año (número de 4 dígitos), no hay headers
-  const hasHeaders = !/^\d{4}$/.test(firstValue?.trim());
+  let headers, startIndex;
   
-  const headers = hasHeaders 
-    ? parseCSVLine(lines[0]).map(h => h.trim())
-    : DEFAULT_HEADERS;
-  
-  const startIndex = hasHeaders ? 1 : 0;
+  if (headerIndex !== -1 && headerIndex !== 0) {
+    // Headers found but not at start - use them and skip data before headers
+    console.log(`Found headers at line ${headerIndex}, skipping ${headerIndex} data rows`);
+    headers = parseCSVLine(lines[headerIndex]).map(h => h.trim());
+    startIndex = headerIndex + 1;
+  } else if (headerIndex === 0) {
+    // Headers at start (normal case)
+    headers = parseCSVLine(lines[0]).map(h => h.trim());
+    startIndex = 1;
+  } else if (firstLineIsData) {
+    // No headers found, first line is data
+    console.log('No headers found, using defaults');
+    headers = DEFAULT_HEADERS;
+    startIndex = 0;
+  } else {
+    // Fallback
+    headers = DEFAULT_HEADERS;
+    startIndex = 0;
+  }
 
   const data = [];
   for (let i = startIndex; i < lines.length; i++) {
-    if (lines[i].trim()) {
-      const values = parseCSVLine(lines[i]);
-      const entry = {};
-      headers.forEach((header, index) => {
-        entry[header] = values[index] ? values[index].trim() : '';
-      });
-      data.push(entry);
-    }
+    const line = lines[i].trim();
+    if (!line || line === 'Upcoming') continue;
+    
+    const values = parseCSVLine(line);
+    
+    // Skip if this is a header line appearing again
+    if (values[0] === 'Year' || values[1] === 'Type') continue;
+    
+    // Skip if no year (invalid data)
+    if (!values[0] || !/^\d{4}$/.test(values[0].trim())) continue;
+    
+    const entry = {};
+    headers.forEach((header, index) => {
+      entry[header] = values[index] ? values[index].trim() : '';
+    });
+    data.push(entry);
   }
+  
+  console.log(`Parsed ${data.length} valid entries from CSV`);
   return data;
 }
 
@@ -90,6 +155,7 @@ function parseCSVLine(line) {
 function getProjectImage(entry) {
   // Buscar la imagen en varias posibles columnas del CSV
   const imageFields = [
+    'Image_name', 'Image_Name', 'image_name', 'IMAGE_NAME',  // ← Tu columna
     'Image_URL', 'Image URL', 'ImageURL', 'image_url', 'image url',
     'Images_link', 'Images link', 'Image', 'image', 'Imagen', 'imagen',
     'Media_URL', 'Media URL', 'Photo', 'photo', 'Picture', 'picture'
@@ -97,7 +163,9 @@ function getProjectImage(entry) {
   
   for (const field of imageFields) {
     if (entry[field] && entry[field].trim()) {
-      return entry[field].trim();
+      const imageValue = entry[field].trim();
+      // Construir URL de Dropbox con el nombre tal cual está en el Excel
+      return buildDropboxURL(imageValue);
     }
   }
   
@@ -109,6 +177,13 @@ function getProjectImage(entry) {
 async function loadCVData() {
   try {
     const response = await fetch(GOOGLE_SHEET_URL);
+    
+    // Check if response is OK (status 200-299)
+    if (!response.ok) {
+      console.error(`Google Sheet returned status ${response.status}`);
+      return null; // Return null to trigger demo data fallback
+    }
+    
     const text = await response.text();
     const data = parseCSV(text);
 
@@ -199,6 +274,14 @@ async function loadCVData() {
           });
         }
       }
+    });
+
+    console.log('Organized data:', {
+      works: organizedData.works.length,
+      publications: organizedData.publications.length,
+      talks: organizedData.talks.length,
+      media: organizedData.media.length,
+      awards: organizedData.awards.length
     });
 
     return organizedData;

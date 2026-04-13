@@ -11,9 +11,9 @@
         <nav>
             <div class="logo">Leticia Izquierdo</div>
             <ul class="nav-links">
-                <li><a href="#works">Works</a></li>
-                <li><a href="#publications">Publications</a></li>
-                <li><a href="#media-workshops">Media</a></li>
+                <li><a href="#works-intro">Works</a></li>
+                <li><a href="#research-section">Research</a></li>
+                <li><a href="#publications">Media & News</a></li>
                 <li><a href="#about">Contact</a></li>
                 <li class="lang-toggle"><a href="#" id="lang-switch">ES</a></li>
             </ul>
@@ -30,32 +30,78 @@
         
         <!-- Fixed About overlay - always visible -->
         <div class="hero-about-overlay">
-            <p class="bio-main">
-                <span class="bio-role" id="rotating-role-slide">Architect</span> based in Boston.
-            </p>
-            <p class="bio-secondary">Working on how technology can make cities more human.<br>PhD researcher at MIT Media Lab.</p>
+            <p class="bio-secondary">Computational Designer & Urban Researcher<br>MIT Media Lab</p>
             <div class="about-contact">
-                <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
+                <a href="mailto:leticiai@mit.edu" class="contact-btn">Contact</a>
             </div>
         </div>
         
         <div class="slider-container">
             <div class="slides">
-                <div class="slide active">
-                    <img src="Images/Intro/perfil.JPG" alt="Leticia Izquierdo">
+                <div class="slide active" id="hero-slide">
+                    <img id="hero-image" src="Images/Intro/SF-PPT-LeticiaIzquierdo.003.jpeg" alt="Leticia Izquierdo">
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="works">
-        <div id="works-grid" class="project-grid"></div>
+    <!-- Works Section Intro -->
+    <section id="works-intro" class="research-intro">
+        <div class="container">
+            <h2 class="section-big-title">Selected projects</h2>
+            <p class="section-subtitle">Work that reimagines how we inhabit our cities.</p>
+        </div>
     </section>
 
-    <!-- Talks Section -->
-    <!-- Publications & Talks - Inset continuation -->
-    <section id="publications" class="works-continuation">
-        <div class="continuation-label">Publications & Talks</div>
+    <!-- Works Section - All Projects in Storytelling Format -->
+    <section id="works-story">
+        <!-- All projects will be rendered here as full-screen stories -->
+    </section>
+
+    <!-- Research Section Intro -->
+    <section id="research-intro" class="research-intro">
+        <div class="container">
+            <h2 class="section-big-title">Research, presentations, and<br>academic contributions.</h2>
+            <p class="section-subtitle">Recent publications</p>
+        </div>
+    </section>
+
+    <!-- Research Section - Zoox Style: Image + Publications List -->
+    <section id="research-section" class="media-zoox-section">
+        <div class="media-zoox-container">
+            <!-- Left: Featured Publication Image -->
+            <div class="media-featured-image" id="research-featured-image">
+                <img src="Images/20241116_NAHM_AM_146.png" alt="Featured Research" id="research-featured-img">
+                <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" 
+                   target="_blank" 
+                   class="scholar-link-subtle">
+                    View publications on Google Scholar
+                </a>
+            </div>
+            
+            <!-- Right: Publications List -->
+            <div class="media-list-container">
+                <div id="research-list" class="media-list-zoox">
+                    <!-- Publications will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media & News Section Intro -->
+    <section id="media-intro" class="research-intro">
+        <div class="container">
+            <h2 class="section-big-title">Moving research forward</h2>
+            <p class="section-subtitle">Featured in media, recognized with awards, and presenting at conferences worldwide.</p>
+        </div>
+    </section>
+
+    <!-- Media & News - Visual Carousel -->
+    <section id="publications" class="works-continuation reveal">
+        <div class="continuation-label">
+            Media, Talks & Awards
+            <span class="scroll-hint">← Scroll →</span>
+        </div>
         <div class="inset-carousel-wrapper">
             <div class="carousel-fade-left"></div>
             <button class="mini-nav prev" aria-label="Previous">‹</button>
@@ -65,16 +111,30 @@
         </div>
     </section>
 
-    <!-- Media & Workshops - Clean text list with tabs -->
-    <section id="media-workshops">
+    <!-- Upcoming Section -->
+    <section id="upcoming-section" class="upcoming-section">
         <div class="container">
-            <h2 class="section-title">Media</h2>
-            <div class="section-tabs">
-                <button class="section-tab active" data-tab="highlights">Highlights</button>
-                <span class="tab-divider">·</span>
-                <button class="section-tab" data-tab="archive">Archive</button>
+            <div class="upcoming-header">
+                <h3 class="upcoming-title">Upcoming</h3>
             </div>
-            <div id="text-list" class="text-list"></div>
+            <div class="upcoming-grid">
+                <div class="upcoming-item">
+                    <span class="upcoming-year">2026</span>
+                    <span class="upcoming-type publication">Publication</span>
+                    <h4 class="upcoming-item-title">AI-Assisted Visioning Expands Civic Agency</h4>
+                </div>
+                <div class="upcoming-item">
+                    <span class="upcoming-year">2026</span>
+                    <span class="upcoming-type talk">Talk</span>
+                    <h4 class="upcoming-item-title">Human Experience in Current and Future Cities</h4>
+                    <p class="upcoming-venue">Norman Foster Institute</p>
+                </div>
+                <div class="upcoming-item">
+                    <span class="upcoming-year">2026</span>
+                    <span class="upcoming-type publication">Publication</span>
+                    <h4 class="upcoming-item-title">DIS</h4>
+                </div>
+            </div>
         </div>
     </section>
 

@@ -321,16 +321,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('CV data loaded:', data ? 'success' : 'failed');
 
   if (data) {
-      console.log('Works:', data.works?.length, 'Talks:', data.talks?.length);
-      if (data.works?.length) renderWorks(data.works);
-      // Publications & Talks (with images)
-      renderVisualCarousel(data.publications || [], data.talks || []);
-      // Media, Workshops & Awards (text list)
-      renderTextList(data.media || [], data.talks || [], data.awards || []);
+      console.log('Works:', data.works?.length, 'Talks:', data.talks?.length, 'Media:', data.media?.length);
+      // Hero - cargar imagen/video
+      renderHeroMedia(data);
+      if (data.works?.length) {
+        renderWorksStory(data.works); // Render ALL projects as stories
+      }
+      // Research - Zoox style list with image (Publications & Talks)
+      renderResearchList(data.publications || []);
+      // Media & News - Visual carousel (Media + Awards + Talks)
+      renderVisualCarousel(data.media || [], data.awards || [], data.talks || []);
       if (data.about) renderAbout(data.about);
     } else {
       console.error('No data received from Google Sheets');
-      document.getElementById('works-grid').innerHTML = '<p style="padding: 2rem; color: #666;">Loading data... If this persists, please refresh the page.</p>';
+      // Load demo data as fallback
+      loadDemoData();
     }
     
     // Cargar socials de forma separada (no crítico)
@@ -344,12 +349,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (error) {
     console.error('Error loading CV data:', error);
-    document.getElementById('works-grid').innerHTML = '<p style="padding: 2rem; color: red;">Error loading data. Please check console.</p>';
+    console.log('Loading demo data as fallback...');
+    loadDemoData();
   }
 });
 
 // Actualizar enlaces de redes sociales dinámicamente
 function updateSocialLinks(socials) {
+  // Si no hay datos de socials válidos, no hacer nada
+  if (!socials || Object.keys(socials).length === 0 || Object.values(socials).every(v => !v)) {
+    console.log('No social links data available, keeping default links');
+    return;
+  }
+  
   // Formatear WhatsApp (agregar prefijo si es necesario)
   const whatsappNum = socials.whatsapp || socials.telefono;
   const whatsappLink = whatsappNum ? `https://wa.me/${whatsappNum.replace(/[^0-9]/g, '')}` : null;
@@ -392,30 +404,14 @@ function updateSocialLinks(socials) {
     `;
   }
   
-  console.log('Social links loaded:', links);
+  // Solo mostrar el log si hay enlaces válidos
+  const hasValidLinks = Object.values(links).some(v => v);
+  if (hasValidLinks) {
+    console.log('Social links loaded:', links);
+  }
 }
 
 // MIT Media Lab style - smart grid filling with paired cards
-// Mapping de imágenes para Works/Projects
-const WORK_IMAGES = {
-  'PIX Moving': 'Images/PIX.png',
-  'Urban Robot': 'Images/PIX.png',
-  'Rebuild the City with Autonomous Mobility': 'Images/PIX.png',
-  'Ghaf Woods': 'Images/Ghafs.jpg',
-  'Ghaf': 'Images/Ghafs.jpg',
-  'Gastronomy': 'Images/gastronomy.png',
-  'gastronomy': 'Images/gastronomy.png',
-  'Active Carbon Sink': 'Images/Canopy.jpg',  // Must be BEFORE 'Carbon'
-  'Manzanares': 'Images/Canopy.jpg',
-  'Urban AI for Zoning': 'Images/SF.png',
-  'Zoning & Development': 'Images/SF.png',
-  'Madrid Nuevo Norte': 'Images/MNN.jpeg',
-  'Carbon': 'Images/20241116_NAHM_AM_146.png',
-  'Neighborhood-Scale': 'Images/20241116_NAHM_AM_146.png',
-  'Affordable Housing': 'Images/Doshi.jpg',
-  'Displaced Communities': 'Images/Doshi.jpg',
-  // Añade más: 'Nombre del proyecto': 'Images/imagen.jpg'
-};
 
 // Archived works - only shown when "More" is clicked
 const ARCHIVED_WORKS = [
@@ -444,12 +440,184 @@ const FEATURED_WORKS = [
   'Data-Driven'
 ];
 
+// ======================================
+// STORYTELLING WORKS RENDER (ALL Projects)
+// ======================================
+function renderWorksStory(works) {
+  const container = document.getElementById('works-story');
+  if (!container) {
+    console.log('works-story container not found');
+    return;
+  }
+  
+  console.log('Total works received:', works.length);
+  
+  // NO usar mappings - las imágenes ya vienen del CSV via getProjectImage
+  // Solo filtrar: debe tener imagen y no estar archivado
+  let projectsToShow = works.filter(work => {
+    const hasImage = work.image && !work.image.includes('placeholder');
+    const isArchived = ARCHIVED_WORKS.some(aw => work.title?.includes(aw));
+    return hasImage && !isArchived;
+  });
+    // Keep the original order from the data array (don't sort by year)
+  
+  console.log('Projects to show:', projectsToShow.length, projectsToShow.map(w => w.title));
+  
+  // If still no works, log error and return
+  if (projectsToShow.length === 0) {
+    console.error('No projects with images found!');
+    container.innerHTML = '<div style="padding: 4rem; text-align: center;">Loading projects...</div>';
+    return;
+  }
+  
+  const INITIAL_PROJECTS = 4; // Mostrar solo los 4 mejores inicialmente
+  const hasMoreProjects = projectsToShow.length > INITIAL_PROJECTS;
+  
+  // Render story sections - inicialmente solo los primeros 4
+  const renderProjectHTML = (work, index) => {
+    const location = work.location || '';
+    const delay = index * 0.05;
+    const isHidden = index >= INITIAL_PROJECTS ? 'hidden-project' : '';
+    
+    return `
+      <section class="story-section reveal ${isHidden}" style="animation-delay: ${delay}s">
+        <div class="story-container">
+          <div class="story-grid">
+            <div class="story-content">
+              <span class="story-label">${work.year} · ${work.type || 'Project'}</span>
+              <h2 class="story-title">${work.title}</h2>
+              <p class="story-description">${work.description || ''}</p>
+              ${location ? `<p class="story-meta">${location}</p>` : ''}
+              ${work.link ? `<a href="${work.link}" target="_blank" class="story-cta">Learn more →</a>` : ''}
+            </div>
+            <div class="story-image" data-parallax="0.2">
+              <img src="${work.image}" alt="${work.title}" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </section>
+    `;
+  };
+  
+  const projectsHTML = projectsToShow.map(renderProjectHTML).join('');
+  
+  // Agregar botón "View all projects" si hay más de 4
+  const viewAllButton = hasMoreProjects ? `
+    <div class="view-all-projects-container">
+      <button class="view-all-projects-btn" id="view-all-projects-btn">
+        <span>View all projects</span>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10h12M10 4l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  ` : '';
+  
+  container.innerHTML = projectsHTML + viewAllButton;
+  
+  // Event listener para el botón
+  if (hasMoreProjects) {
+    const btn = document.getElementById('view-all-projects-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        const hiddenProjects = document.querySelectorAll('.hidden-project');
+        hiddenProjects.forEach(project => {
+          project.classList.remove('hidden-project');
+          project.classList.add('reveal');
+        });
+        btn.parentElement.style.display = 'none';
+        
+        // Re-initialize animations
+        setTimeout(() => {
+          if (typeof initScrollReveal === 'function') {
+            initScrollReveal();
+          }
+        }, 100);
+      });
+    }
+  }
+  
+  console.log('Story sections rendered:', projectsToShow.length, 'projects (showing', Math.min(INITIAL_PROJECTS, projectsToShow.length), 'initially)');
+  
+  // Re-initialize parallax and scroll reveal for new elements
+  setTimeout(() => {
+    if (typeof initParallaxScroll === 'function') {
+      initParallaxScroll();
+    }
+    if (typeof initScrollReveal === 'function') {
+      initScrollReveal();
+    }
+  }, 100);
+}
+
+// ======================================
+// DEMO DATA FALLBACK
+// ======================================
+function loadDemoData() {
+  console.log('Loading demo data...');
+  
+  const demoData = {
+    works: [
+      { year: 2026, type: 'Hero', title: 'Hero Image', image: 'Images/Intro/SF-PPT-LeticiaIzquierdo.003.jpeg' }, // Hero entry
+      { year: 2025, type: 'Project', title: 'Ghaf Woods Experience Centre', description: 'Award-winning biophilic urban ecosystem design with native Ghaf trees integrating sustainable forest living', location: 'Dubai, AE', image: 'Ghafs.jpg', link: '' },
+      { year: 2026, type: 'Project', title: 'Madrid 2050: How Will We Live in the City of the Future?', description: 'Strategic urban planning project to transform Madrid into a sustainable, carbon-neutral, and technologically advanced metropolis', location: 'Madrid, ES', image: 'Canopy.jpg', link: '' },
+      { year: 2025, type: 'Project', title: 'Generative Experiences: LLM Agent-Based Modeling and Citizen Narratives to Rehearse Urban Futures', description: 'Computational agents platform for simulating zoning conflicts and development debates in urban planning', location: 'San Francisco, US', image: 'SF.png', link: '' },
+      { year: 2019, type: 'Project', title: 'PIX Rebuild the City with Autonomous Mobility', description: 'Self-driving mobility initiatives exploring how autonomous vehicles reshape urban infrastructure. Mapped the urban use cases for Robotaxis as a catalyst for redesigning cities', location: 'Guiyang, CN', image: 'PIX.png', link: '' },
+    ],
+    publications: [
+      { year: 2026, title: 'The challenges, methods, and opportunities of understanding informal urbanism: a case study in Lomas del Centinela, Mexico', journal: 'Nature NPJ Urban Sustainability', link: 'https://www.nature.com/articles/s42949-026-00360-x', image: 'Canopy.jpg' },
+      { year: 2026, title: 'Comparative assessment of women\'s safety and mobility research methods in informal neighborhoods', journal: 'Nature NPJ Urban Sustainability', link: 'https://www.nature.com/articles/s42949-026-00358-5', image: '20241116_NAHM_AM_146.png' },
+      { year: 2026, title: 'My Digital Twin Walks the City: Decisional Symmetry in Human–Agent Urban Navigation', journal: 'ACM Designing Interactive Systems. DIS 2026', link: '', image: 'SF.png' },
+      { year: 2025, title: 'Neighborhood-Scale Carbon Emissions Impact: Engaging Visitors in Urban Sustainability', journal: 'Interactions 32 (6), 12-15', link: '', image: '20241116_NAHM_AM_146.png' },
+      { year: 2025, title: 'Generative Agents in Agent-Based Modeling: Overview, Validation, and Emerging Challenges', journal: 'IEEE Transactions on Artificial Intelligence', link: 'https://ieeexplore.ieee.org/abstract/document/10985773', image: 'SF.png' },
+      { year: 2022, title: 'Cities: Affordable Housing Workshop', journal: 'Norman Foster Foundation', link: 'https://d1f6o4licw9har.cloudfront.net/flip/NFF22/54/index.html', image: 'Cities NFF.png' },
+    ],
+    talks: [
+      { year: 2024, title: 'Transforming Cities: AI for a Human-Centered Future', institution: 'TEDxBoston: Countdown to Artificial General Intelligence', link: 'https://www.media.mit.edu/events/tedxboston-countdown-to-artificial-general-intelligence/', image: 'Canopy.jpg' },
+      { year: 2025, title: 'Human Experience in Current and Future Cities', institution: 'Norman Foster Institute', link: 'https://www.holcimfoundation.org/events/cities-affordable-housing-workshop-2022', image: 'Cities NFF.png' },
+      { year: 2025, title: 'Community Carbon Impact Calculator', institution: 'NYC Climate Week', link: '', image: '20241116_NAHM_AM_146.png' },
+      { year: 2025, title: 'Madrid 2050: Design Future Thinking', institution: 'I Foro Urbano Internacional, COAM', link: 'https://www.instagram.com/letici.ai/p/DR0HbbfkSEr/', image: 'Canopy.jpg' },
+    ],
+    media: [
+      { year: 2025, title: 'The goat brigade that stops raging forest fires in Chile', outlet: 'El País (International Edition)', link: 'https://english.elpais.com/international/2025-07-26/the-goat-brigade-that-stops-raging-forest-fires-in-chile.html', image: 'b82325fe-d869-4f90-8dd8-886df91a5f4e.png' },
+      { year: 2024, title: 'Efficient doesn\'t always mean livable', outlet: 'Business Insider', link: 'https://www.businessinsider.es/tecnologia/espanola-investiga-mit-ia-disenar-mejores-ciudades-1242606', image: '20241116_NAHM_AM_146.png' },
+      { year: 2024, title: 'Technology can help make cities less hostile', outlet: 'Diario de Ávila', link: 'https://www.diariodeavila.es/noticia/zc6c27059-d84a-bf31-3ea6a53aa2fc391d/202304/la-tecnologia-puede-ayudar-a-hacer-ciudades-menos-hostiles', image: 'perfil.JPG' },
+      { year: 2024, title: 'AI to improve people\'s lives', outlet: 'COPE Radio', link: '', image: 'perfil.JPG' },
+    ],
+    awards: [
+      { year: 2025, title: 'First Prize Ghaf Wood Competition', institution: 'MITxMAF GHAF Woods Development', image: 'Ghafs.jpg' },
+      { year: 2023, title: 'Holcim Scholarship Fellow', institution: 'Holcim Foundation', image: 'Cities NFF.png' },
+      { year: 2022, title: 'La Caixa Postgraduate Fellowship', institution: 'La Caixa Foundation', image: 'Canopy.jpg' },
+      { year: 2017, title: 'Minister of Development Award', institution: 'Spanish Government', image: 'bienale.jpg' },
+    ],
+    about: {
+      education: [],
+      experience: []
+    }
+  };
+  
+  // Render with demo data
+  renderHeroMedia(demoData); // Hero image/video
+  if (demoData.works?.length) {
+    renderWorksStory(demoData.works);
+  }
+  renderResearchList(demoData.publications || []);
+  renderVisualCarousel(demoData.media || [], demoData.awards || [], demoData.talks || []);
+}
+
 function renderWorks(works) {
   const container = document.getElementById('works-grid');
   if (!container) return;
   
-  // Sort: featured first, archived last, then by year, then by having image
-  works.sort((a, b) => {
+  // Filter out featured projects that are already in story format
+  const nonFeaturedWorks = works.filter(work => {
+    const isFeatured = FEATURED_WORKS.some(fw => work.title?.includes(fw));
+    const hasImage = work.image && !work.image.includes('placeholder');
+    return !(isFeatured && hasImage); // Exclude featured projects with images
+  });
+  
+  // Sort: archived last, then by year, then by having image
+  nonFeaturedWorks.sort((a, b) => {
     const aFeatured = FEATURED_WORKS.some(fw => a.title?.includes(fw));
     const bFeatured = FEATURED_WORKS.some(fw => b.title?.includes(fw));
     const aArchived = ARCHIVED_WORKS.some(aw => a.title?.includes(aw));
@@ -473,20 +641,11 @@ function renderWorks(works) {
     return b.year - a.year;
   });
 
-  // Apply local image mappings
-  works = works.map(work => {
-    const sortedKeys = Object.keys(WORK_IMAGES).sort((a, b) => b.length - a.length);
-    const localImage = sortedKeys.find(key => 
-      work.title?.includes(key) || work.institution?.includes(key)
-    );
-    if (localImage) {
-      work.image = WORK_IMAGES[localImage];
-    }
-    return work;
-  });
+  // NO usar mappings - las imágenes ya vienen del CSV
+  const mappedWorks = nonFeaturedWorks;
   
   const VISIBLE_COUNT = 6;
-  const hasMore = works.length > VISIBLE_COUNT;
+  const hasMore = mappedWorks.length > VISIBLE_COUNT;
   
   function renderWorkCards(worksToRender) {
     return worksToRender.map(work => {
@@ -519,7 +678,7 @@ function renderWorks(works) {
   }
   
   // Show curated selection
-  const visibleWorks = works.slice(0, VISIBLE_COUNT);
+  const visibleWorks = mappedWorks.slice(0, VISIBLE_COUNT);
   container.innerHTML = renderWorkCards(visibleWorks);
   
   // Add "View all" link if there are more
@@ -531,20 +690,11 @@ function renderWorks(works) {
     
     viewAllLink.querySelector('a').addEventListener('click', (e) => {
       e.preventDefault();
-      container.innerHTML = renderWorkCards(works);
+      container.innerHTML = renderWorkCards(mappedWorks);
       viewAllLink.remove();
     });
   }
 }
-
-// Mapping de imágenes locales para talks específicos
-const TALK_IMAGES = {
-  'Community Carbon Impact Calculator': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
-  'NYC Climate Week': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
-  'Carbon': 'Images/Intro/b82325fe-d869-4f90-8dd8-886df91a5f4e.png',
-  'Affordable Housing Workshop': 'Images/Cities NFF.png',
-  'Scholar Presentation': 'Images/Cities NFF.png'
-};
 
 function renderTalks(talks) {
   const container = document.getElementById('talks-list');
@@ -561,8 +711,8 @@ function renderTalks(talks) {
   });
   
   // Prioritize talks with images or featured for the visible ones
-  const withImages = talks.filter(t => TALK_IMAGES[t.title] || TALK_IMAGES[t.institution] || t.image || t.featured);
-  const withoutImages = talks.filter(t => !TALK_IMAGES[t.title] && !TALK_IMAGES[t.institution] && !t.image && !t.featured);
+  const withImages = talks.filter(t => t.image || t.featured);
+  const withoutImages = talks.filter(t => !t.image && !t.featured);
   const sortedTalks = [...withImages, ...withoutImages];
   
   const VISIBLE_COUNT = 3; // Show only 3 initially
@@ -571,8 +721,8 @@ function renderTalks(talks) {
   
   function renderTalkCards(items) {
     return items.map((talk) => {
-      const localImage = TALK_IMAGES[talk.title] || TALK_IMAGES[talk.institution];
-      const talkImage = localImage || talk.image;
+      // NO usar mappings - usar imagen del CSV directamente
+      const talkImage = talk.image;
       const hasImage = talkImage && !talkImage.includes('placeholder');
       
       return `
@@ -611,36 +761,27 @@ function renderTalks(talks) {
   }
 }
 
-// Mapping de imágenes locales para publications
-const PUB_IMAGES = {
-  'Spanish Pavilion catalogue becoming Venice Architecture Biennale': 'Images/becoming.webp',
-  'XIV Bienal Española de Arquitectura y Urbanismo': 'Images/bienale.jpg',
-  'Neighborhood-Scale Carbon Emissions Impact': 'Images/catalog-open-ps-ExihbitX.png',
-  'Cities: Affordable Housing Workshop': 'Images/Cities NFF.png',
-  'Affordable Housing Workshop': 'Images/Cities NFF.png'
-  // 'Generative Agents' uses gradient background
-};
-
-// Default image for publications preview
-const DEFAULT_PUB_IMAGE = 'Images/becoming.webp';
-
 // Publications & Talks - Visual carousel with images
-function renderVisualCarousel(publications, talks) {
+function renderVisualCarousel(media, awards, talks) {
   const container = document.getElementById('visual-carousel');
   if (!container) return;
   
-  // Helper to get publication image
-  function getPubImage(pub) {
-    const localImage = Object.keys(PUB_IMAGES).find(key => pub.title.includes(key));
-    return localImage ? PUB_IMAGES[localImage] : (pub.image || null);
-  }
+  // NO usar mappings - las imágenes ya vienen del CSV
+  const mediaWithImages = media;
   
-  // Combine publications and talks (only those that are "Talk" type, not workshops)
-  const pubItems = publications.map(p => ({
-    ...p,
-    itemType: 'Publication',
-    venue: p.journal,
-    image: getPubImage(p)
+  // Combine media, awards, and talks
+  const mediaItems = mediaWithImages.map(m => ({
+    ...m,
+    itemType: 'Media',
+    venue: m.outlet,
+    image: m.image || null
+  }));
+  
+  const awardItems = awards.map(a => ({
+    ...a,
+    itemType: 'Award',
+    venue: a.institution,
+    image: a.image || null
   }));
   
   const talkItems = talks
@@ -649,13 +790,20 @@ function renderVisualCarousel(publications, talks) {
       ...t,
       itemType: 'Talk',
       venue: t.institution,
-      image: TALK_IMAGES[t.title] || TALK_IMAGES[t.institution] || t.image
+      image: t.image || null  // NO usar mappings - usar imagen del CSV
     }));
   
-  const allItems = [...pubItems, ...talkItems];
+  const allItems = [...mediaItems, ...awardItems, ...talkItems];
   
-  // Sort: prioritize items with images, then by year (newest first)
+  // Sort: prioritize TED talks, then items with images, then by year (newest first)
   allItems.sort((a, b) => {
+    const aIsTED = a.title?.toLowerCase().includes('ted') || a.venue?.toLowerCase().includes('ted');
+    const bIsTED = b.title?.toLowerCase().includes('ted') || b.venue?.toLowerCase().includes('ted');
+    
+    // TED talks always come first
+    if (aIsTED && !bIsTED) return -1;
+    if (bIsTED && !aIsTED) return 1;
+    
     const aHasImage = a.image && !a.image.includes('placeholder');
     const bHasImage = b.image && !b.image.includes('placeholder');
     
@@ -684,16 +832,18 @@ function renderVisualCarousel(publications, talks) {
     
     return `
       <article class="visual-card ${hasImage ? '' : 'no-image'}" ${!hasImage ? `style="background: ${cardGradient}"` : ''}>
+        ${item.itemType === 'Award' ? '<div class="award-badge">🏆</div>' : ''}
+        ${item.itemType === 'Talk' ? '<div class="award-badge talk-badge">🎤</div>' : ''}
         ${hasImage ? `
-          <div class="visual-card-image">
-            <img src="${item.image}" alt="${item.title}">
-          </div>
+          <img src="${item.image}" alt="${item.title}" class="visual-card-image">
         ` : ''}
-        <div class="visual-card-overlay">
-          <span class="visual-card-tag">${item.itemType.toUpperCase()}</span>
-          <span class="visual-card-year">${item.year}</span>
+        <div class="visual-card-content">
+          <div class="visual-card-outlet">${item.venue || item.institution || 'Conference'}</div>
           <h3 class="visual-card-title">${item.title}</h3>
-          <p class="visual-card-venue">${item.venue || ''}</p>
+          <div class="visual-card-meta">
+            <span class="visual-card-type visual-card-type-${item.itemType.toLowerCase()}">${item.itemType}</span>
+            <span>${item.year}</span>
+          </div>
         </div>
         ${item.link ? `<a href="${item.link}" target="_blank" class="visual-card-link"></a>` : ''}
       </article>
@@ -834,6 +984,181 @@ function renderTextList(media, talks, awards = []) {
   });
 }
 
+// ======================================
+// RESEARCH LIST RENDER (Zoox Style - Image + List for Publications & Talks)
+// ======================================
+function renderResearchList(publications) {
+  const listContainer = document.getElementById('research-list');
+  const featuredImage = document.getElementById('research-featured-img');
+  
+  if (!listContainer || !featuredImage) {
+    console.log('research containers not found');
+    return;
+  }
+  
+  // Helper to get publication image (NO usar mappings - usar imagen del CSV)
+  function getPubImage(pub) {
+    return pub.image || null;
+  }
+  
+  // Only publications
+  const pubItems = publications.map(p => ({
+    ...p,
+    itemType: 'Publication',
+    venue: p.journal,
+    image: getPubImage(p)
+  }));
+  
+  const allItems = pubItems;
+  
+  // Sort: prioritize items with images, then by year
+  allItems.sort((a, b) => {
+    const aHasImage = a.image && !a.image.includes('placeholder');
+    const bHasImage = b.image && !b.image.includes('placeholder');
+    
+    if (aHasImage && !bHasImage) return -1;
+    if (bHasImage && !aHasImage) return 1;
+    
+    return b.year - a.year;
+  });
+  
+  // Take only the most important and recent items (5-6)
+  const itemsToShow = allItems.slice(0, 6);
+  
+  console.log('Rendering research list (main & latest):', itemsToShow.length);
+  
+  // Set first image as featured
+  if (itemsToShow.length > 0 && itemsToShow[0].image) {
+    featuredImage.src = itemsToShow[0].image;
+  }
+  
+  // Render list items
+  listContainer.innerHTML = itemsToShow.map((item, index) => {
+    const badgeText = item.itemType;
+    
+    return `
+      <a href="${item.link || '#'}" 
+         target="_blank" 
+         class="media-item-zoox"
+         data-image="${item.image || ''}"
+         onmouseenter="updateResearchImage('${item.image || ''}')">
+        <div class="media-item-content">
+          <h3 class="media-item-title">${item.title}</h3>
+          <div class="media-item-meta">
+            <span class="media-item-badge">${badgeText}</span>
+            ${item.venue ? `<span class="media-item-outlet">${item.venue}</span>` : ''}
+          </div>
+        </div>
+        <div class="media-item-arrow">→</div>
+      </a>
+    `;
+  }).join('');
+}
+
+// Update research image on hover
+window.updateResearchImage = function(imageSrc) {
+  const featuredImage = document.getElementById('research-featured-img');
+  if (featuredImage && imageSrc) {
+    featuredImage.style.opacity = '0.7';
+    setTimeout(() => {
+      featuredImage.src = imageSrc;
+      featuredImage.style.opacity = '1';
+    }, 200);
+  }
+};
+
+// ======================================
+// MEDIA LIST RENDER (Zoox Style - Image + List)
+// ======================================
+function renderMediaCards(media) {
+  const listContainer = document.getElementById('media-list');
+  const featuredImage = document.getElementById('media-featured-img');
+  
+  if (!listContainer || !featuredImage) {
+    console.log('media containers not found');
+    return;
+  }
+  
+  // NO usar mappings - las imágenes ya vienen del CSV
+  const mediaWithImages = media;
+  
+  // Sort by year, newest first
+  const sortedMedia = mediaWithImages.sort((a, b) => b.year - a.year);
+  
+  // Take first 8 media items
+  const mediaToShow = sortedMedia.slice(0, 8);
+  
+  console.log('Rendering media list:', mediaToShow.length);
+  
+  // Set first image as featured
+  if (mediaToShow.length > 0 && mediaToShow[0].image) {
+    featuredImage.src = mediaToShow[0].image;
+  }
+  
+  // Render list items
+  listContainer.innerHTML = mediaToShow.map((item, index) => {
+    const badgeText = item.itemType || 'News';
+    
+    return `
+      <a href="${item.link || '#'}" 
+         target="_blank" 
+         class="media-item-zoox"
+         data-image="${item.image || ''}"
+         onmouseenter="updateMediaImage('${item.image || ''}')">
+        <div class="media-item-content">
+          <h3 class="media-item-title">${item.title}</h3>
+          <div class="media-item-meta">
+            <span class="media-item-badge">${badgeText}</span>
+            ${item.outlet ? `<span class="media-item-outlet">${item.outlet}</span>` : ''}
+          </div>
+        </div>
+        <div class="media-item-arrow">→</div>
+      </a>
+    `;
+  }).join('');
+  
+  console.log('Media list rendered');
+}
+
+// Update featured image on hover (global function)
+window.updateMediaImage = function(imageSrc) {
+  const featuredImage = document.getElementById('media-featured-img');
+  if (featuredImage && imageSrc) {
+    featuredImage.style.opacity = '0.7';
+    setTimeout(() => {
+      featuredImage.src = imageSrc;
+      featuredImage.style.opacity = '1';
+    }, 200);
+  }
+};
+
+// ======================================
+// AWARDS LIST RENDER (Timeline Style)
+// ======================================
+function renderAwardsList(awards) {
+  const container = document.getElementById('awards-list');
+  if (!container) {
+    console.log('awards-list container not found');
+    return;
+  }
+  
+  // Sort by year, newest first
+  const sortedAwards = [...awards].sort((a, b) => b.year - a.year);
+  
+  console.log('Rendering awards:', sortedAwards.length);
+  
+  container.innerHTML = sortedAwards.map(award => `
+    <article class="text-list-item award" data-type="Award">
+      <div class="tl-year">${award.year}</div>
+      <div class="tl-type">Award</div>
+      <div class="tl-content">
+        <h3>${award.title}</h3>
+        ${award.institution ? `<p class="tl-outlet">${award.institution}</p>` : ''}
+      </div>
+    </article>
+  `).join('');
+}
+
 function initPublicationPreview() {
   const preview = document.getElementById('publications-preview');
   if (!preview) return;
@@ -898,14 +1223,6 @@ function initPublicationPreview() {
     startAutoRotate();
   }
 }
-
-// Mapping de imágenes para Media
-// Añade imágenes reales de los artículos aquí:
-// 'Título del artículo': 'Images/nombre-imagen.jpg'
-const MEDIA_IMAGES = {
-  // 'The goat brigade that stops raging forest fires in Chile': 'Images/goat-chile.jpg',
-  // 'Business Insider Interview': 'Images/business-insider.jpg',
-};
 
 function renderMedia(media) {
   const container = document.getElementById('media-list');
@@ -1005,7 +1322,8 @@ function renderTalksCarousel(talks) {
   
   // Render carousel cards with image and overlay
   container.innerHTML = talks.map((talk) => {
-    const localImage = TALK_IMAGES[talk.title] || TALK_IMAGES[talk.institution] || talk.image;
+    // NO usar mappings - usar imagen del CSV directamente
+    const localImage = talk.image || null;
     const hasImage = localImage && !localImage.includes('placeholder');
     
     return `
@@ -1044,5 +1362,133 @@ function initTalksCarousel() {
   
   nextBtn.addEventListener('click', () => {
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  });
+}
+
+// ======================================
+// HERO IMAGE/VIDEO LOADER
+// ======================================
+function renderHeroMedia(data) {
+  const heroImage = document.getElementById('hero-image');
+  const heroSlide = document.getElementById('hero-slide');
+  
+  if (!heroImage || !heroSlide) {
+    console.log('Hero elements not found');
+    return;
+  }
+  
+  // Buscar entrada con Type = "Hero" o "hero"
+  const allItems = [
+    ...(data.works || []),
+    ...(data.publications || []),
+    ...(data.media || []),
+    ...(data.talks || []),
+    ...(data.awards || [])
+  ];
+  
+  const heroEntry = allItems.find(item => 
+    item.type?.toLowerCase() === 'hero' || 
+    item.Type?.toLowerCase() === 'hero'
+  );
+  
+  if (heroEntry && heroEntry.image) {
+    console.log('✅ Hero media found:', heroEntry.image);
+    
+    // Detectar si es video o imagen
+    const isVideo = heroEntry.image.match(/\.(mp4|webm|ogg|mov)$/i);
+    
+    if (isVideo) {
+      // Reemplazar <img> por <video>
+      heroSlide.innerHTML = `
+        <video autoplay muted loop playsinline id="hero-video">
+          <source src="${heroEntry.image}" type="video/mp4">
+        </video>
+      `;
+      console.log('🎬 Video hero loaded');
+    } else {
+      // Actualizar imagen
+      heroImage.src = heroEntry.image;
+      heroImage.alt = heroEntry.title || 'Leticia Izquierdo';
+      console.log('🖼️ Image hero loaded');
+    }
+  } else {
+    console.log('ℹ️ No Hero entry found in Google Sheet, using default image');
+  }
+}
+
+// ======================================
+// SCROLL REVEAL ANIMATIONS (Zoox Style)
+// ======================================
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { 
+    threshold: 0.05,
+    rootMargin: '0px 0px -100px 0px' 
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
+// Initialize scroll reveal on page load
+document.addEventListener('DOMContentLoaded', () => {
+  initScrollReveal();
+  initParallaxScroll();
+  initScrollProgress();
+});
+
+// ======================================
+// PARALLAX SCROLLING (Zoox Style - Smooth)
+// ======================================
+function initParallaxScroll() {
+  const parallaxElements = document.querySelectorAll('[data-parallax]');
+  
+  if (parallaxElements.length === 0) return;
+  
+  let ticking = false;
+  
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const scrolled = window.pageYOffset;
+        
+        parallaxElements.forEach(element => {
+          const speed = parseFloat(element.dataset.parallax) || 0.5;
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top + scrolled;
+          const elementHeight = element.offsetHeight;
+          
+          // Only apply parallax when element is in viewport
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            const yPos = -(scrolled - elementTop) * speed;
+            element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+          }
+        });
+        
+        ticking = false;
+      });
+      
+      ticking = true;
+    }
+  });
+}
+
+// ======================================
+// SCROLL PROGRESS INDICATOR
+// ======================================
+function initScrollProgress() {
+  const progressBar = document.createElement('div');
+  progressBar.className = 'scroll-progress';
+  document.body.appendChild(progressBar);
+  
+  window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    progressBar.style.width = scrolled + '%';
   });
 }
