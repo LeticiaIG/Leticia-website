@@ -3,155 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leticia Izquierdo - Urban Design & Technology</title>
+    <title>LETICI.AI — Urban Design & Technology</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232A2420'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='13' font-weight='700' fill='%23E8967E' letter-spacing='-1'>L.AI</text></svg>">
 </head>
 <body>
+
+    <!-- NAV -->
     <header>
         <nav>
-            <div class="logo">Leticia Izquierdo</div>
+            <div class="logo">LETICI.AI</div>
             <ul class="nav-links">
-                <li><a href="#works-intro">Works</a></li>
+                <li><a href="#works-grid-section">Works</a></li>
                 <li><a href="#research-section">Research</a></li>
-                <li><a href="#publications">Media & News</a></li>
+                <li><a href="#activity-section">Activity</a></li>
                 <li><a href="#about">Contact</a></li>
                 <li class="lang-toggle"><a href="#" id="lang-switch">ES</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Hero Slider -->
+    <!-- HERO -->
     <section id="hero-slider">
-        <!-- Breathing Cloud Animation -->
-        <div class="organic-blobs">
-            <div class="cloud-bubble"></div>
-            <div class="cloud-bubble-2"></div>
-        </div>
-        
-        <!-- Fixed About overlay - always visible -->
-        <div class="hero-about-overlay">
-            <p class="bio-secondary">Computational Designer & Urban Researcher<br>MIT Media Lab</p>
-            <div class="about-contact">
-                <a href="mailto:leticiai@mit.edu" class="contact-btn">Contact</a>
-            </div>
-        </div>
-        
         <div class="slider-container">
             <div class="slides">
                 <div class="slide active" id="hero-slide">
-                    <img id="hero-image" src="Images/Intro/SF-PPT-LeticiaIzquierdo.003.jpeg" alt="Leticia Izquierdo">
+                    <video id="hero-video" autoplay muted loop playsinline preload="auto">
+                        <source src="Images/hero-bg.mp4" type="video/mp4">
+                    </video>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="hero-content">
+            <p class="hero-label">PhD Researcher · MIT Media Lab</p>
+            <h1 class="hero-headline">Making technology<br>feel <em class="hero-accent">alive</em>.</h1>
+            <p class="hero-sub">Simulating people, spaces, and decisions<br>before they become real.</p>
 
-    <!-- Works Section Intro -->
-    <section id="works-intro" class="research-intro">
-        <div class="container">
-            <h2 class="section-big-title">Selected projects</h2>
-            <p class="section-subtitle">Work that reimagines how we inhabit our cities.</p>
-        </div>
-    </section>
-
-    <!-- Works Section - All Projects in Storytelling Format -->
-    <section id="works-story">
-        <!-- All projects will be rendered here as full-screen stories -->
-    </section>
-
-    <!-- Research Section Intro -->
-    <section id="research-intro" class="research-intro">
-        <div class="container">
-            <h2 class="section-big-title">Research, presentations, and<br>academic contributions.</h2>
-            <p class="section-subtitle">Recent publications</p>
-        </div>
-    </section>
-
-    <!-- Research Section - Zoox Style: Image + Publications List -->
-    <section id="research-section" class="media-zoox-section">
-        <div class="media-zoox-container">
-            <!-- Left: Featured Publication Image -->
-            <div class="media-featured-image" id="research-featured-image">
-                <img src="Images/20241116_NAHM_AM_146.png" alt="Featured Research" id="research-featured-img">
-                <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" 
-                   target="_blank" 
-                   class="scholar-link-subtle">
-                    View publications on Google Scholar
+            <div class="hero-actions">
+                <a href="#works-grid-section" class="hero-btn-primary">
+                    Explore Work
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
                 </a>
+                <a href="mailto:leticiai@mit.edu" class="hero-btn-secondary">Contact</a>
             </div>
-            
-            <!-- Right: Publications List -->
-            <div class="media-list-container">
-                <div id="research-list" class="media-list-zoox">
-                    <!-- Publications will be rendered here -->
+        </div>
+
+        <!-- Upcoming ticker — bottom of hero -->
+        <div id="upcoming-banner" class="upcoming-banner">
+            <span class="upcoming-pulse"></span>
+            <span class="upcoming-next-badge">Next</span>
+            <div class="upcoming-ticker" id="upcoming-banner-items">
+                <div class="upcoming-ticker-track">
+                    <span class="upcoming-ticker-item">Human Experience in Current and Future Cities · Norman Foster Institute</span>
+                    <span class="upcoming-ticker-sep">—</span>
+                    <span class="upcoming-ticker-item">AI-Assisted Visioning Expands Civic Agency</span>
+                    <span class="upcoming-ticker-sep">—</span>
+                    <span class="upcoming-ticker-item">My Digital Twin Walks the City: Decisional Symmetry in Human–Agent Urban Navigation · DIS Conference · Singapore</span>
+                    <span class="upcoming-ticker-sep">—</span>
+                    <!-- duplicated for seamless loop -->
+                    <span class="upcoming-ticker-item">Human Experience in Current and Future Cities · Norman Foster Institute</span>
+                    <span class="upcoming-ticker-sep">—</span>
+                    <span class="upcoming-ticker-item">AI-Assisted Visioning Expands Civic Agency</span>
+                    <span class="upcoming-ticker-sep">—</span>
+                    <span class="upcoming-ticker-item">My Digital Twin Walks the City: Decisional Symmetry in Human–Agent Urban Navigation · DIS Conference · Singapore</span>
+                    <span class="upcoming-ticker-sep">—</span>
                 </div>
             </div>
         </div>
+
+        <div class="hero-scroll-hint">
+            <span>Scroll</span>
+            <div class="hero-scroll-line"></div>
+        </div>
     </section>
 
-    <!-- Media & News Section Intro -->
-    <section id="media-intro" class="research-intro">
+
+    <!-- WORKS — Grid asimétrico -->
+    <section id="works-grid-section">
         <div class="container">
-            <h2 class="section-big-title">Moving research forward</h2>
-            <p class="section-subtitle">Featured in media, recognized with awards, and presenting at conferences worldwide.</p>
+            <p class="section-label-small">Selected Projects</p>
+            <h2 class="section-title-large">Work that reimagines how we<br><em>inhabit</em> our cities.</h2>
+        </div>
+        <div class="projects-grid" id="works-grid">
+            <!-- Rendered by app.js -->
+        </div>
+        <div class="view-all-container">
+            <button class="view-all-btn" id="view-all-projects-btn" style="display:none">
+                View more →
+            </button>
         </div>
     </section>
 
-    <!-- Media & News - Visual Carousel -->
-    <section id="publications" class="works-continuation reveal">
-        <div class="continuation-label">
-            Media, Talks & Awards
-            <span class="scroll-hint">← Scroll →</span>
-        </div>
-        <div class="inset-carousel-wrapper">
-            <div class="carousel-fade-left"></div>
-            <button class="mini-nav prev" aria-label="Previous">‹</button>
-            <div id="visual-carousel" class="visual-carousel"></div>
-            <button class="mini-nav next" aria-label="Next">›</button>
-            <div class="carousel-fade-right"></div>
-        </div>
-    </section>
-
-    <!-- Upcoming Section -->
-    <section id="upcoming-section" class="upcoming-section">
+    <!-- RESEARCH — Card Grid -->
+    <section id="research-section">
         <div class="container">
-            <div class="upcoming-header">
-                <h3 class="upcoming-title">Upcoming</h3>
-            </div>
-            <div class="upcoming-grid">
-                <div class="upcoming-item">
-                    <span class="upcoming-year">2026</span>
-                    <span class="upcoming-type publication">Publication</span>
-                    <h4 class="upcoming-item-title">AI-Assisted Visioning Expands Civic Agency</h4>
-                </div>
-                <div class="upcoming-item">
-                    <span class="upcoming-year">2026</span>
-                    <span class="upcoming-type talk">Talk</span>
-                    <h4 class="upcoming-item-title">Human Experience in Current and Future Cities</h4>
-                    <p class="upcoming-venue">Norman Foster Institute</p>
-                </div>
-                <div class="upcoming-item">
-                    <span class="upcoming-year">2026</span>
-                    <span class="upcoming-type publication">Publication</span>
-                    <h4 class="upcoming-item-title">DIS</h4>
-                </div>
-            </div>
+            <p class="section-label-small">Research</p>
+            <h2 class="section-title-large">Published work.</h2>
+            <div id="research-list" class="pub-grid"></div>
         </div>
     </section>
 
-    <!-- Hidden old media section -->
-    <!-- Footer with CV toggle -->
+    <!-- ACTIVITY SECTION -->
+    <section class="activity" id="activity-section">
+
+        <h2 class="activity-section-title">Activity.</h2>
+        <p class="activity-section-sub">Selected highlights from conferences, workshops, and media across 10+ countries.</p>
+
+        <!-- FEATURED BENTO GRID — rendered by app.js -->
+        <div class="featured-grid" id="activity-featured-grid">
+            <!-- 3 featured cards — editorial selection -->
+            <div class="featured-card featured-card--hero">
+                <img class="featured-img" src="https://www.dropbox.com/scl/fi/lw36wtb2u8wtwkv5yiy5e/TEDx.jpg?rlkey=lx6d8ah46pqj7ncxzxhjgofrb&dl=1" alt="TEDxBoston">
+                <div class="featured-content">
+                    <span class="featured-badge featured-badge--talk">Talk · 2024</span>
+                    <div class="featured-title">Transforming Cities: AI for a Human-Centered Future</div>
+                    <div class="featured-source">TEDxBoston: Countdown to AGI</div>
+                </div>
+                <a href="https://www.media.mit.edu/events/tedxboston-countdown-to-artificial-general-intelligence/" target="_blank" class="featured-arrow">↗</a>
+            </div>
+            <div class="featured-card featured-card--sm">
+                <img class="featured-img" src="Images/NYClimate.png" alt="NYC Climate Week">
+                <div class="featured-content">
+                    <span class="featured-badge featured-badge--talk">Talk · 2025</span>
+                    <div class="featured-title">Community Carbon Impact Calculator</div>
+                    <div class="featured-source">NYC Climate Week · New York</div>
+                </div>
+            </div>
+            <div class="featured-card featured-card--sm">
+                <img class="featured-img" src="https://www.dropbox.com/scl/fi/7qggmzdi9n0rvxla000ki/SF-talk.png?rlkey=3o952rvuj152gd2ynvugisv4n&dl=1" alt="SF Zoning">
+                <div class="featured-content">
+                    <span class="featured-badge featured-badge--talk">Workshop · 2025</span>
+                    <div class="featured-title">Making Family Zoning Visible in San Francisco</div>
+                    <div class="featured-source">City Science Lab · MIT Media Lab</div>
+                </div>
+                <a href="https://blog.archive.org/event/visualizing-family-zoning-a-city-science-fair/" target="_blank" class="featured-arrow">↗</a>
+            </div>
+        </div>
+
+        <!-- ROTATING MENTIONS -->
+        <div class="compact-mentions compact-rotator" id="activity-compact-mentions">
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--talk"></span>
+                <span class="compact-name">TEDxBoston: Countdown to AGI</span>
+                <span class="compact-where">· Talk, 2024</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--award"></span>
+                <span class="compact-name">First Prize · Ghaf Wood Competition</span>
+                <span class="compact-where">· MITxMAF, 2025</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--talk"></span>
+                <span class="compact-name">Human Experience in Current and Future Cities</span>
+                <span class="compact-where">· Norman Foster Institute, 2025</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--workshop"></span>
+                <span class="compact-name">Urban Biometrics Workshop</span>
+                <span class="compact-where">· MIT &amp; Shanghai, 2025</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--award"></span>
+                <span class="compact-name">Holcim Scholarship Fellow</span>
+                <span class="compact-where">· Holcim Foundation, 2023</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--talk"></span>
+                <span class="compact-name">The goat brigade that stops raging fires in Chile</span>
+                <span class="compact-where">· El País (International Edition), 2025</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--talk"></span>
+                <span class="compact-name">NYC Climate Week</span>
+                <span class="compact-where">· Carbon Impact Calculator, 2025</span>
+            </div>
+            <div class="compact-item">
+                <span class="compact-dot compact-dot--talk"></span>
+                <span class="compact-name">Madrid 2050: Design Future Thinking</span>
+                <span class="compact-where">· I Foro Urbano Internacional, COAM, 2025</span>
+            </div>
+        </div>
+
+
+    </section>
+
+    <!-- FOOTER -->
     <footer id="about">
         <div class="container">
             <div class="footer-main">
                 <div class="footer-left">
-                    <p class="footer-copy">&copy; 2025 Leticia Izquierdo</p>
-                    <button class="cv-toggle" id="cv-toggle">
-                        <span>CV</span>
-                        <span class="cv-toggle-icon">+</span>
-                    </button>
+                    <p class="footer-brand">LETICI.AI</p>
+                    <p class="footer-tagline">map. design. rehearse.</p>
                 </div>
                 <div class="footer-right">
-                    <a href="mailto:leticiai@mit.edu" class="contact-btn">Get in touch →</a>
                     <div class="social-links">
                         <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
                         <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
@@ -160,8 +204,13 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Collapsible CV -->
+            <div class="footer-bottom">
+                <button class="cv-toggle" id="cv-toggle">
+                    <span>CV</span>
+                    <span class="cv-toggle-icon">+</span>
+                </button>
+                <p class="footer-copy">Leticia Izquierdo &nbsp;·&nbsp; &copy; 2026</p>
+            </div>
             <div class="cv-content" id="cv-content">
                 <div class="cv-grid cv-grid-2">
                     <div class="cv-column">

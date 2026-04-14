@@ -6,6 +6,13 @@ const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nR
 // URL para la pestaña Socials (gid=1 para la segunda pestaña)
 const GOOGLE_SHEET_SOCIALS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQM4nRNvW0kxwWMwaScflXuMKo6SxkAChyLMuI-dOzFOGj_ysPQnnPsmel9UO6QEudePYtJ_ZAYjjNU/pub?gid=1&single=true&output=csv';
 
+// Función helper para evitar caché del CSV
+function getSheetURL(baseURL) {
+  const timestamp = new Date().getTime();
+  const separator = baseURL.includes('?') ? '&' : '?';
+  return `${baseURL}${separator}_t=${timestamp}`;
+}
+
 // ====================================
 // DROPBOX AUTO-LINK CONFIGURATION
 // ====================================
@@ -25,7 +32,9 @@ function buildDropboxURL(filename, type = '') {
   // Si ya es una URL completa de Dropbox
   if (filename.includes('http')) {
     // Convertir dl=0 a dl=1 automáticamente para visualización directa
-    return filename.replace('dl=0', 'dl=1');
+    const finalURL = filename.replace('dl=0', 'dl=1');
+    console.log(`🔗 Dropbox URL: ${finalURL.substring(0, 80)}...`);
+    return finalURL;
   }
   
   // Fallback para construcción manual (por si acaso)
@@ -176,7 +185,8 @@ function getProjectImage(entry) {
 // Función para cargar datos desde Google Sheets
 async function loadCVData() {
   try {
-    const response = await fetch(GOOGLE_SHEET_URL);
+    // Usar getSheetURL para evitar caché
+    const response = await fetch(getSheetURL(GOOGLE_SHEET_URL));
     
     // Check if response is OK (status 200-299)
     if (!response.ok) {
@@ -186,6 +196,11 @@ async function loadCVData() {
     
     const text = await response.text();
     const data = parseCSV(text);
+    
+    console.log('📊 Raw CSV data loaded:', data.length, 'rows');
+    if (data.length > 0) {
+      console.log('📋 First row columns:', Object.keys(data[0]));
+    }
 
     // Organizar datos por categorías
     const organizedData = {
@@ -194,6 +209,7 @@ async function loadCVData() {
       publications: [],
       media: [],
       awards: [],
+      upcoming: [],
       about: { education: [], experience: [] }
     };
 
@@ -211,7 +227,8 @@ async function loadCVData() {
           description: entry.Description,
           link: entry.Link,
           image: getProjectImage(entry),
-          tags: entry.Tags || entry.Tag || ''
+          tags: entry.Tags || entry.Tag || '',
+          Website: entry.Website || entry.website  // ✅ Pasar columna Website
         });
       } else if (category === 'talks') {
         organizedData.talks.push({
@@ -224,7 +241,8 @@ async function loadCVData() {
           link: entry.Link,
           description: entry.Description,
           featured: FEATURED_TALKS.includes(entry.Title),
-          image: getProjectImage(entry)
+          image: getProjectImage(entry),
+          Website: entry.Website || entry.website  // ✅ Pasar columna Website
         });
       } else if (category === 'publications') {
         organizedData.publications.push({
@@ -234,7 +252,8 @@ async function loadCVData() {
           authors: entry.Collaborators,
           link: entry.Link,
           description: entry.Description,
-          image: getProjectImage(entry)
+          image: getProjectImage(entry),
+          Website: entry.Website || entry.website  // ✅ Pasar columna Website
         });
       } else if (category === 'media') {
         organizedData.media.push({
@@ -243,7 +262,8 @@ async function loadCVData() {
           outlet: entry.Institution,
           link: entry.Link,
           description: entry.Description,
-          image: getProjectImage(entry)
+          image: getProjectImage(entry),
+          Website: entry.Website || entry.website  // ✅ Pasar columna Website
         });
       } else if (category === 'awards') {
         organizedData.awards.push({
@@ -252,7 +272,8 @@ async function loadCVData() {
           institution: entry.Institution,
           location: [entry.City, entry.Country].filter(Boolean).join(', '),
           description: entry.Description,
-          featured: FEATURED_AWARDS.includes(entry.Title)
+          featured: FEATURED_AWARDS.includes(entry.Title),
+          Website: entry.Website || entry.website  // ✅ Pasar columna Website
         });
       } else if (category === 'about') {
         if (entry.Type === 'Education') {
@@ -274,6 +295,20 @@ async function loadCVData() {
           });
         }
       }
+      
+      // Capturar items marcados como "Upcoming"
+      if (entry.Upcoming === 'X' || entry.upcoming === 'X' || entry.Upcoming === 'x' || entry.upcoming === 'x') {
+        organizedData.upcoming.push({
+          year: entry.Year,
+          type: entry.Type,
+          title: entry.Title,
+          institution: entry.Institution,
+          venue: entry.Institution,
+          location: [entry.City, entry.Country].filter(Boolean).join(', '),
+          description: entry.Description,
+          link: entry.Link
+        });
+      }
     });
 
     console.log('Organized data:', {
@@ -281,7 +316,8 @@ async function loadCVData() {
       publications: organizedData.publications.length,
       talks: organizedData.talks.length,
       media: organizedData.media.length,
-      awards: organizedData.awards.length
+      awards: organizedData.awards.length,
+      upcoming: organizedData.upcoming.length
     });
 
     return organizedData;
@@ -294,7 +330,7 @@ async function loadCVData() {
 // Función para cargar datos de Socials desde Google Sheets
 async function loadSocialsData() {
   try {
-    const response = await fetch(GOOGLE_SHEET_SOCIALS_URL);
+    const response = await fetch(getSheetURL(GOOGLE_SHEET_SOCIALS_URL));
     const text = await response.text();
     const data = parseCSV(text);
     
