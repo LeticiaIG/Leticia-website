@@ -3,68 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - Leticia Izquierdo</title>
+    <title>Blog — Leticia Izquierdo</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="blog-styles.css">
+    <style>
+        body {
+            margin: 0;
+            background: #0a0d12;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .uc-label {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--coral, #E8967E);
+            margin-bottom: 1.5rem;
+        }
+        .uc-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            color: rgba(255,255,255,0.92);
+            margin: 0 0 1rem;
+        }
+        .uc-sub {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 2.5rem;
+        }
+        .uc-back {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.45);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding-bottom: 2px;
+            transition: color 0.2s;
+        }
+        .uc-back:hover { color: var(--coral, #E8967E); }
+    </style>
 </head>
-<body class="blog-page">
-    <header>
-        <nav>
-            <a href="index.html" class="logo">Leticia Izquierdo</a>
-            <ul class="nav-links">
-                <li><a href="index.html#works">Works</a></li>
-                <li><a href="index.html#publications">Publications</a></li>
-                <li><a href="index.html#media-workshops">Media</a></li>
-                <li><a href="blog.html" class="active">Blog</a></li>
-                <li><a href="index.html#about">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="blog-main">
-        <!-- Hero - Foster Minimal -->
-        <section class="blog-hero">
-            <div class="container">
-                <p class="blog-title">Writing</p>
-                <h1 class="blog-subtitle">Reflections on cities, technology, and the spaces we inhabit.</h1>
-            </div>
-        </section>
-
-        <!-- Blog posts grid -->
-        <section class="blog-posts-section">
-            <div class="container">
-                <div id="blog-posts-grid" class="blog-posts-grid">
-                    <!-- Posts loaded dynamically -->
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Article Reader Modal -->
-    <div id="article-modal" class="article-modal">
-        <div class="article-modal-content">
-            <button class="article-close" onclick="closeArticle()">×</button>
-            <div id="article-content" class="article-content">
-                <!-- Article content loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <div class="container">
-            <div class="footer-main">
-                <p class="footer-copy">&copy; 2025 Leticia Izquierdo</p>
-                <div class="social-links">
-                    <a href="https://www.linkedin.com/in/leticia-izquierdo" target="_blank">LinkedIn</a>
-                    <a href="https://www.instagram.com/letici.ai" target="_blank">Instagram</a>
-                    <a href="https://scholar.google.com/citations?user=YOhqs88AAAAJ&hl=es" target="_blank">Scholar</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="config.js"></script>
-    <script src="blog.js"></script>
+<body>
+    <p class="uc-label">Blog</p>
+    <h1 class="uc-title">Under construction.</h1>
+    <p class="uc-sub">Something is brewing — check back soon.</p>
+    <a href="index.html" class="uc-back">← Back to home</a>
 </body>
 </html>
-

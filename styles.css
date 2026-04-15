@@ -105,11 +105,11 @@ header {
 /* Zoox Style: Bold, modern typography */
 
 header .logo {
-    font-family: 'IBM Plex Mono', 'Space Mono', monospace;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
     color: #ffffff;
     transition: color 0.4s ease;
     line-height: 1;
@@ -4322,6 +4322,16 @@ body {
     color: rgba(255,255,255,0.92);
 }
 
+#research-section .view-all-btn {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+}
+
+#research-section .view-all-btn:hover {
+    color: var(--coral);
+    opacity: 1;
+}
+
 @media (max-width: 900px) {
     .pub-grid { grid-template-columns: 1fr; }
     #research-section .container { padding: 0 1.5rem; }
@@ -4963,10 +4973,10 @@ body {
 
 /* Footer brand */
 .footer-brand {
-    font-family: 'IBM Plex Mono', 'Space Mono', monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: #fff;
     line-height: 1;
     margin-bottom: 0;
