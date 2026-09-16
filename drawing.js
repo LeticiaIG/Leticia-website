@@ -92,6 +92,8 @@
       </div>
       ${entry.instructions ? `<p class="dr-instructions">${entry.instructions}</p>` : ''}` : ''}
 
+      ${links.length ? `<div class="dr-links">${links.join('')}</div>` : ''}
+
       ${(entry.images || []).length ? `
       <div class="dr-gallery">
         ${entry.images.map(src => `<a href="${esc(src)}" target="_blank"><img src="${esc(src)}" alt="" loading="lazy"></a>`).join('')}
@@ -110,8 +112,6 @@
           ${post.text ? `<p class="dr-post-text">${post.text}</p>` : ''}
         </div>`).join('')}
       </section>` : ''}
-
-      ${links.length ? `<div class="dr-links">${links.join('')}</div>` : ''}
 
       <nav class="dr-pager">
         ${prev ? `<a href="#${esc(prev.id)}">← ${pad(index)} ${esc(prev.title)}</a>` : '<span></span>'}

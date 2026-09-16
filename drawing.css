@@ -228,6 +228,26 @@ body.drawing-page::before { display: none; }
         border-radius: 999px;
         padding: 0.45rem 0.9rem;
     }
-    .dr-tab.is-active { border-color: var(--coral); }
+    .dr-tab.is-active { border-color: #fff; }
     .dr-frame { aspect-ratio: 4 / 5; }
 }
+
+/* ── Old-school serif in white for the former orange accents (labels, numbers, Process) ── */
+.dr-label,
+.dr-tab-num,
+.dr-panel-num,
+.dr-process-head,
+.dr-version-label {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 400;
+    color: #fff;
+}
+.dr-tab .dr-tab-num                { color: rgba(255,255,255,0.45); }
+.dr-tab.is-active .dr-tab-num      { color: #fff; }
+.dr-label,
+.dr-process-head { font-size: 0.85rem; letter-spacing: 0.12em; }
+.dr-tab-num      { font-size: 0.95rem; }
+.dr-panel-num    { font-size: 1.25rem; }
+
+.drawing-page header .nav-links a.active,
+.drawing-page header.scrolled .nav-links a.active { color: #fff; border-bottom-color: #fff; }

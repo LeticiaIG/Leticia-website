@@ -34,7 +34,7 @@ const DRAWING_ENTRIES = [
     title: 'Computational Concept with a Drawing',
     date: '2026-09-16',
     description:
-      'Primera iteración. Una línea continua avanza sin parar. Cuando la cámara detecta movimiento, cambia de dirección.',
+      'First iteration. A continuous line keeps moving forward. When the camera detects movement, it changes direction.',
     instructions:
       'Allow camera access. <b>R</b> clear · <b>S</b> save PNG · <b>+ / −</b> sensitivity.',
     sketch: 'sketches/week-01/',
