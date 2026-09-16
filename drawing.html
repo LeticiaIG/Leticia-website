@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing ++ — Leticia Izquierdo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="drawing.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%232A2420'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='13' font-weight='700' fill='%23E8967E' letter-spacing='-1'>L.AI</text></svg>">
+</head>
+<body class="drawing-page">
+
+    <!-- NAV -->
+    <header class="scrolled">
+        <nav>
+            <a href="index.html" class="logo" style="text-decoration:none">Leticia Izquierdo</a>
+            <ul class="nav-links">
+                <li><a href="index.html#works-grid-section">Works</a></li>
+                <li><a href="index.html#research-section">Research</a></li>
+                <li><a href="index.html#activity-section">Activity</a></li>
+                <li><a href="drawing.html" class="active">Drawing ++</a></li>
+                <li><a href="index.html#about">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="dr-wrap">
+        <div class="dr-intro">
+            <p class="dr-label" id="dr-term"></p>
+            <h1 class="dr-title" id="dr-title">Drawing ++</h1>
+            <p class="dr-sub" id="dr-subtitle"></p>
+        </div>
+
+        <div class="dr-layout">
+            <!-- Lista de semanas (se genera desde drawing-data.js) -->
+            <aside class="dr-index">
+                <ol class="dr-tabs" id="dr-tabs"></ol>
+            </aside>
+
+            <!-- Contenido de la semana seleccionada -->
+            <article class="dr-panel" id="dr-panel"></article>
+        </div>
+    </main>
+
+    <script src="drawing-data.js"></script>
+    <script src="drawing.js"></script>
+</body>
+</html>
