@@ -182,7 +182,7 @@ body.drawing-page::before { display: none; }
 /* Process blog */
 .dr-process {
     margin-top: 3.5rem;
-    padding-top: 2rem;
+    padding: 2rem 0 0;
     border-top: 1px solid rgba(255,255,255,0.08);
 }
 .dr-process-head {
@@ -204,6 +204,40 @@ body.drawing-page::before { display: none; }
     border: 1px solid rgba(255,255,255,0.08);
 }
 .dr-post-text { color: rgba(255,255,255,0.7); margin-top: 0.8rem; }
+
+/* Feedback */
+.dr-feedback {
+    margin-top: 3rem;
+    padding: 2rem 0 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+.dr-feedback-form { display: grid; gap: 0.75rem; max-width: 820px; }
+.dr-feedback-form input,
+.dr-feedback-form textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 0.95rem;
+    color: #fff;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 4px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+}
+.dr-feedback-form input:focus,
+.dr-feedback-form textarea:focus { outline: none; border-color: #fff; }
+.dr-feedback-form button {
+    justify-self: start;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    color: #000;
+    background: #fff;
+    border: 0;
+    border-radius: 4px;
+    padding: 0.5rem 1.1rem;
+    cursor: pointer;
+}
+.dr-feedback-form button:hover { background: rgba(255,255,255,0.85); }
 
 /* Prev / next */
 .dr-pager {

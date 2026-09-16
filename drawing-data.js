@@ -27,7 +27,8 @@
 const DRAWING_COURSE = {
   title: 'Drawing ++',
   subtitle: 'Weekly sketches, experiments and notes from class.',
-  term: 'Fall 2026'
+  term: 'Fall 2026',
+  feedbackEmail: 'leticiai@mit.edu'   // where the Feedback box sends messages
 };
 
 const DRAWING_ENTRIES = [
@@ -49,12 +50,7 @@ const DRAWING_ENTRIES = [
       // { label: 'v02', sketch: 'sketches/week-01/v02/', instructions: '...' }
     ],
     process: [
-      {
-        title: 'First approach',
-        date: '2026-09-16',
-        image: 'Images/drawing/week-01-first-approach.jpg',
-        text: 'A continuous line keeps moving forward. When the camera detects movement, it changes direction and draws an eye: how long you were watching the line before it turned.'
-      }
+      { image: 'Images/drawing/week-01-first-approach.jpg' }
     ]
   }
 

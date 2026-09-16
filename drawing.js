@@ -121,14 +121,24 @@
         <h3 class="dr-process-head">Process</h3>
         ${entry.process.map(post => `
         <div class="dr-post">
+          ${post.title || post.date ? `
           <div class="dr-post-meta">
-            <span class="dr-post-title">${esc(post.title)}</span>
+            ${post.title ? `<span class="dr-post-title">${esc(post.title)}</span>` : ''}
             ${post.date ? `<span class="dr-post-date">${formatDate(post.date)}</span>` : ''}
-          </div>
+          </div>` : ''}
           ${post.image ? `<a href="${esc(post.image)}" target="_blank"><img class="dr-post-img" src="${esc(post.image)}" alt="${esc(post.title)}" loading="lazy"></a>` : ''}
           ${post.text ? `<p class="dr-post-text">${post.text}</p>` : ''}
         </div>`).join('')}
       </section>` : ''}
+
+      <section class="dr-feedback">
+        <h3 class="dr-process-head">Feedback</h3>
+        <form class="dr-feedback-form">
+          <input class="dr-fb-name" type="text" placeholder="Name (optional)">
+          <textarea class="dr-fb-text" rows="4" placeholder="Leave your feedback…" required></textarea>
+          <button type="submit">Send feedback</button>
+        </form>
+      </section>
 
       <nav class="dr-pager">
         ${prev ? `<a href="#${esc(prev.id)}">← ${pad(index)} ${esc(prev.title)}</a>` : '<span></span>'}
@@ -150,6 +160,20 @@
   panelEl.addEventListener('mouseover', e => {
     const f = e.target.closest && e.target.closest('.dr-frame');
     if (f) { const ifr = f.querySelector('iframe'); try { ifr.contentWindow.focus(); } catch (_) {} }
+  });
+
+  // Feedback box: opens an email with the message
+  panelEl.addEventListener('submit', e => {
+    const form = e.target.closest && e.target.closest('.dr-feedback-form');
+    if (!form) return;
+    e.preventDefault();
+    const text = form.querySelector('.dr-fb-text').value.trim();
+    if (!text) return;
+    const name = form.querySelector('.dr-fb-name').value.trim();
+    const title = (document.querySelector('.dr-panel-title') || {}).textContent || 'Drawing ++';
+    const subject = `Drawing ++ feedback — ${title}`;
+    const body = text + (name ? `\n\n— ${name}` : '');
+    window.location.href = `mailto:${course.feedbackEmail || ''}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });
 
   window.addEventListener('hashchange', route);
