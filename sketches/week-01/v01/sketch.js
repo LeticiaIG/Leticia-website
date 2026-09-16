@@ -230,6 +230,13 @@ function hud(el) {
   stroke(inkC);
   strokeWeight(1);
   rect(x, y, w, h);
+
+  // barrita de movimiento debajo de la camara
+  noStroke();
+  fill(red(inkC), green(inkC), blue(inkC), 30);
+  rect(x, y + h + 6, w, 4, 2);
+  fill(accentC);
+  rect(x, y + h + 6, constrain(map(suave, 0, 25, 0, w), 0, w), 4, 2);
 }
 
 // el teclado: otra fuente de eventos

@@ -62,12 +62,34 @@
       panelEl.innerHTML = '<p class="dr-empty">No entries yet — add one in <code>drawing-data.js</code>.</p>';
       return;
     }
-    const s = resolveSketch(entry.sketch, entry.code);
+    // Iterations (v01, v02…). A plain `sketch` on the entry counts as one unlabeled iteration.
+    const versions = (entry.versions && entry.versions.length)
+      ? entry.versions
+      : (entry.sketch ? [{ sketch: entry.sketch, code: entry.code, instructions: entry.instructions }] : []);
+
+    const renderVersion = v => {
+      const s = resolveSketch(v.sketch, v.code);
+      const vlinks = [];
+      if (s) {
+        vlinks.push(`<a href="${esc(s.open)}" target="_blank" rel="noopener">Open full screen ↗</a>`);
+        if (s.code) vlinks.push(`<a href="${esc(s.code)}" target="_blank" rel="noopener">View code ↗</a>`);
+      }
+      return `
+      <div class="dr-version">
+        ${v.label ? `<h3 class="dr-version-label">${esc(v.label)}</h3>` : ''}
+        ${v.description ? `<div class="dr-panel-desc">${v.description}</div>` : ''}
+        ${s ? `
+        <div class="dr-frame">
+          <iframe src="${esc(s.embed)}" title="${esc(entry.title)} ${esc(v.label || '')}" loading="lazy"
+                  allow="fullscreen; camera; microphone; accelerometer; gyroscope"
+                  allowfullscreen></iframe>
+        </div>` : ''}
+        ${v.instructions ? `<p class="dr-instructions">${v.instructions}</p>` : ''}
+        ${vlinks.length ? `<div class="dr-links">${vlinks.join('')}</div>` : ''}
+      </div>`;
+    };
+
     const links = [];
-    if (s) {
-      links.push(`<a href="${esc(s.open)}" target="_blank" rel="noopener">Open full screen ↗</a>`);
-      if (s.code) links.push(`<a href="${esc(s.code)}" target="_blank" rel="noopener">View code ↗</a>`);
-    }
     (entry.links || []).forEach(l => links.push(`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)} ↗</a>`));
 
     const prev = entries[index - 1];
@@ -78,19 +100,14 @@
         <span class="dr-panel-num">${pad(index + 1)}</span>
         <div>
           <h2 class="dr-panel-title">${esc(entry.title)}</h2>
+          ${entry.subtitle ? `<p class="dr-panel-subtitle">${esc(entry.subtitle)}</p>` : ''}
           ${entry.date ? `<p class="dr-panel-date">${formatDate(entry.date)}</p>` : ''}
         </div>
       </div>
 
       ${entry.description ? `<div class="dr-panel-desc">${entry.description}</div>` : ''}
 
-      ${s ? `
-      <div class="dr-frame">
-        <iframe src="${esc(s.embed)}" title="${esc(entry.title)}" loading="lazy"
-                allow="fullscreen; camera; microphone; accelerometer; gyroscope"
-                allowfullscreen></iframe>
-      </div>
-      ${entry.instructions ? `<p class="dr-instructions">${entry.instructions}</p>` : ''}` : ''}
+      ${versions.map(renderVersion).join('')}
 
       ${links.length ? `<div class="dr-links">${links.join('')}</div>` : ''}
 

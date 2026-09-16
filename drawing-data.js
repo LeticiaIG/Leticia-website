@@ -8,6 +8,8 @@
    Campos:
      id          → identificador corto, sin espacios (sale en la URL: drawing.html#week-03)
      title       → título de la pestaña
+     subtitle    → (opcional) texto debajo del título (p. ej. 'Events')
+     versions    → (opcional) iteraciones: [{ label: 'v01', sketch, instructions, description }]
      date        → fecha 'AAAA-MM-DD' (opcional)
      description → texto (puedes usar <b>, <i>, <a href="">, <br>)
      instructions→ (opcional) instrucciones de uso que salen debajo del dibujo
@@ -31,23 +33,30 @@ const DRAWING_COURSE = {
 const DRAWING_ENTRIES = [
   {
     id: 'week-01',
-    title: 'Computational Concept with a Drawing',
-    date: '2026-09-16',
+    title: 'Computational Concept in a Drawing',
+    subtitle: 'Events',
     description:
       'First iteration. A continuous line keeps moving forward. When the camera detects movement, it changes direction.',
-    instructions:
-      'Allow camera access. <b>R</b> clear · <b>S</b> save PNG · <b>+ / −</b> sensitivity.',
-    sketch: 'sketches/week-01/',
+    versions: [
+      {
+        label: 'v01',
+        sketch: 'sketches/week-01/v01/',
+        instructions:
+          'Allow camera access and click on the drawing to use the keyboard: ' +
+          '<b>SPACE</b> manual event · <b>1 / 2 / 3</b> turn type · <b>R</b> clear · <b>S</b> save PNG · <b>+ / −</b> sensitivity.'
+      }
+      // Next iteration: add a comma after the } above and copy the block, e.g.
+      // { label: 'v02', sketch: 'sketches/week-01/v02/', instructions: '...' }
+    ],
     process: [
       {
         title: 'First approach',
         date: '2026-09-16',
         image: 'Images/drawing/week-01-first-approach.jpg',
-        text: 'Una línea continua avanza sin parar. Cuando la cámara detecta movimiento, cambia de dirección y dibuja un ojo: cuánto tiempo has estado mirando la línea antes de que gire.'
+        text: 'A continuous line keeps moving forward. When the camera detects movement, it changes direction and draws an eye: how long you were watching the line before it turned.'
       }
     ]
   }
 
-  // Semana siguiente: copia el bloque de arriba, pon una coma después de la } anterior
-  // y usa, por ejemplo, sketch: 'sketches/week-02/'
+  // Next week: add a comma after the } above and copy the whole block.
 ];
