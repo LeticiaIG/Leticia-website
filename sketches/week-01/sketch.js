@@ -3,12 +3,12 @@
 // Un lapiz avanza SIEMPRE a velocidad constante: el tiempo hecho visible.
 // Cada vez que la camara detecta movimiento se dispara un evento, y el
 // manejador hace una sola cosa: girar el rumbo del lapiz. Asi, cada tramo
-// recto mide literalmente el tiempo entre dos eventos, y en cada giro queda
-// un ojo de almendra mirando hacia la nueva direccion (iris ambar = eventos
-// seguidos, azul = hubo que esperar).
+// recto mide literalmente el tiempo entre dos eventos, y en cada giro queda un
+// quiebro en la linea.
 //
 // Como usarlo: pega este codigo en sketch.js en editor.p5js.org, dale a Play
 // y acepta el permiso de camara. No necesita ninguna libreria extra.
+// Camara: arriba a la izquierda, dentro del dibujo.
 // Teclas: ESPACIO = evento manual · 1/2/3 = tipo de giro · R = borrar
 //         S = guardar PNG · + / - = sensibilidad
 
@@ -17,7 +17,7 @@ let camOK = false;
 
 // ---- parametros ----
 const SPEED = 60;    // pixeles por segundo del lapiz (tiempo -> longitud)
-const HUD_H = 140;   // franja inferior (camara + estado)
+const HUD_H = 0;     // sin franja inferior: el dibujo ocupa toda la pantalla
 const MAXV  = 500;   // vertices maximos guardados
 const MAXDT = 5;     // segundos a los que el iris llega al azul
 
@@ -157,111 +157,36 @@ function draw() {
   const ult = verts[verts.length - 1];
   line(ult.x, ult.y, pos.x, pos.y);
 
-  // un ojo en cada giro, mirando hacia la nueva direccion
-  for (const v of verts) {
-    if (v.dt !== null) ojoEnGiro(v);
-  }
 
   // la punta del lapiz, con el tiempo de espera creciendo en vivo
   const el = (millis() - lastT) / 1000;
   noStroke();
   fill(accentC);
   circle(pos.x, pos.y, 7);
-  fill(faintC);
-  textAlign(LEFT, CENTER);
-  text(nf(el, 0, 1) + ' s', pos.x + 10, pos.y);
 
   hud(el);
 }
 
-// ---- el ojo de almendra en un vertice de giro ----
-function almendraCentrada(w, h) {
-  beginShape();
-  vertex(-w / 2, 0);
-  quadraticVertex(0, -2 * h, w / 2, 0);
-  quadraticVertex(0, 2 * h, -w / 2, 0);
-  endShape(CLOSE);
-}
-
-function ojoEnGiro(v) {
-  const w = constrain(10 + v.dt * 6, 10, 40);   // un poco mas grande si hubo espera
-  const h = constrain(w * 0.36, 4, 15);
-
+// ---- camara arriba a la izquierda ----
+function hud(el) {
+  if (!(camOK && cam.width > 0)) return;
+  const x = 16, y = 16, w = 160, h = 120;
   push();
-  translate(v.x, v.y);
-  rotate(v.heading);
-  noStroke();
-  fill(scleraC);
-  almendraCentrada(w, h);
-  const r = h * 0.78;
-  fill(colorIris(v.dt));  circle(0, 0, r * 2);
-  fill(inkC);             circle(0, 0, r * 0.9);
+  translate(x + w, y);
+  scale(-1, 1);            // en espejo
+  image(cam, 0, 0, w, h);
+  pop();
   noFill();
   stroke(inkC);
-  strokeWeight(1.3);
-  almendraCentrada(w, h);
-  pop();
+  strokeWeight(1);
+  rect(x, y, w, h);
 
-  fill(faintC);
+  // barrita de movimiento debajo de la camara
   noStroke();
-  textAlign(CENTER, BASELINE);
-  text(nf(v.dt, 0, 1) + ' s', v.x, v.y + h + 14);
-}
-
-function colorIris(dt) {
-  const t = constrain(dt / MAXDT, 0, 1);
-  colorMode(HSB, 360, 100, 100);
-  const c = color(lerp(38, 205, t), 62, 72);    // ambar -> azul
-  colorMode(RGB, 255);
-  return c;
-}
-
-// ---- franja inferior: camara, medidor y estado ----
-function hud(el) {
-  const hy = height - HUD_H;
-  stroke(red(inkC), green(inkC), blue(inkC), 40);
-  line(24, hy, width - 24, hy);
-
-  if (camOK && cam.width > 0) {
-    push();
-    translate(24 + 160, hy + 10);
-    scale(-1, 1);
-    image(cam, 0, 0, 160, 120);
-    pop();
-    noFill();
-    stroke(inkC);
-    strokeWeight(1);
-    rect(24, hy + 10, 160, 120);
-
-    const mx = 24 + 178, my = hy + 16, mw = 170;
-    noStroke();
-    fill(red(inkC), green(inkC), blue(inkC), 30);
-    rect(mx, my, mw, 8, 4);
-    fill(accentC);
-    rect(mx, my, constrain(map(suave, 0, 25, 0, mw), 0, mw), 8, 4);
-    const tx = mx + constrain(map(umbralAlto, 0, 25, 0, mw), 0, mw);
-    stroke(inkC);
-    line(tx, my - 3, tx, my + 11);
-
-    fill(faintC);
-    noStroke();
-    textAlign(LEFT, BASELINE);
-    text('movimiento — umbral ' + nf(umbralAlto, 0, 0) + '  (+ / -)', mx, my + 30);
-    text(armado ? 'armado: el proximo movimiento gira el rumbo' : 'esperando calma para rearmar...', mx, my + 50);
-  } else {
-    fill(faintC);
-    noStroke();
-    textAlign(LEFT, BASELINE);
-    text('Esperando la camara (acepta el permiso). Mientras, ESPACIO dispara eventos.', 24, hy + 34);
-  }
-
-  const nombres = { 1: 'angulo recto (90)', 2: 'zigzag (45)', 3: 'aleatorio' };
-  fill(faintC);
-  noStroke();
-  textAlign(RIGHT, BASELINE);
-  text(nEventos + ' eventos · giro: ' + nombres[modo] + '  (cambia con 1/2/3)', width - 24, hy + 26);
-  text('desde el ultimo evento: ' + nf(el, 0, 1) + ' s', width - 24, hy + 46);
-  text('ESPACIO evento manual · R borrar · S guardar PNG', width - 24, hy + 66);
+  fill(red(inkC), green(inkC), blue(inkC), 30);
+  rect(x, y + h + 6, w, 4, 2);
+  fill(accentC);
+  rect(x, y + h + 6, constrain(map(suave, 0, 25, 0, w), 0, w), 4, 2);
 }
 
 // el teclado: otra fuente de eventos

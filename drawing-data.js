@@ -19,6 +19,7 @@
      code        → (opcional) enlace al código si es distinto del sketch
      images      → (opcional) lista de imágenes: ['Images/drawing/w1-a.png', ...]
      links       → (opcional) lista de enlaces: [{ label: 'Referencia', url: 'https://...' }]
+     process     → (opcional) blog del proceso: [{ title, date, image, text }]
    ═══════════════════════════════════════════════════════════ */
 
 const DRAWING_COURSE = {
@@ -30,17 +31,21 @@ const DRAWING_COURSE = {
 const DRAWING_ENTRIES = [
   {
     id: 'week-01',
-    title: 'EventosGiros',
+    title: 'Computational Concept with a Drawing',
     date: '2026-09-16',
     description:
-      'Un dibujo dirigido por eventos. Un lápiz avanza siempre a velocidad constante: el tiempo hecho visible. ' +
-      'Cada vez que la cámara detecta movimiento se dispara un evento que gira el rumbo del lápiz, así que cada tramo recto ' +
-      'mide el tiempo entre dos eventos. En cada giro queda un ojo mirando hacia la nueva dirección ' +
-      '(iris ámbar = eventos seguidos, azul = hubo que esperar).',
+      'Primera iteración. Una línea continua avanza sin parar. Cuando la cámara detecta movimiento, cambia de dirección.',
     instructions:
-      'Acepta el permiso de cámara y haz clic sobre el dibujo para usar el teclado: ' +
-      '<b>ESPACIO</b> evento manual · <b>1 / 2 / 3</b> tipo de giro · <b>R</b> borrar · <b>S</b> guardar PNG · <b>+ / −</b> sensibilidad.',
-    sketch: 'sketches/week-01/'
+      'Allow camera access. <b>R</b> clear · <b>S</b> save PNG · <b>+ / −</b> sensitivity.',
+    sketch: 'sketches/week-01/',
+    process: [
+      {
+        title: 'First approach',
+        date: '2026-09-16',
+        image: 'Images/drawing/week-01-first-approach.jpg',
+        text: 'Una línea continua avanza sin parar. Cuando la cámara detecta movimiento, cambia de dirección y dibuja un ojo: cuánto tiempo has estado mirando la línea antes de que gire.'
+      }
+    ]
   }
 
   // Semana siguiente: copia el bloque de arriba, pon una coma después de la } anterior

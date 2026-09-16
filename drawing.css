@@ -166,6 +166,32 @@ body.drawing-page::before { display: none; }
 }
 .dr-links a:hover { color: var(--coral); border-color: var(--coral); }
 
+/* Process blog */
+.dr-process {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+.dr-process-head {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--coral);
+    margin-bottom: 1.5rem;
+}
+.dr-post { margin-bottom: 2.5rem; max-width: 820px; }
+.dr-post-meta { display: flex; gap: 1rem; align-items: baseline; margin-bottom: 0.8rem; }
+.dr-post-title { color: #fff; font-weight: 500; }
+.dr-post-date { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+.dr-post-img {
+    width: 100%;
+    display: block;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.dr-post-text { color: rgba(255,255,255,0.7); margin-top: 0.8rem; }
+
 /* Prev / next */
 .dr-pager {
     display: flex;

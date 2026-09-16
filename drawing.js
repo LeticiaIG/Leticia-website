@@ -97,6 +97,20 @@
         ${entry.images.map(src => `<a href="${esc(src)}" target="_blank"><img src="${esc(src)}" alt="" loading="lazy"></a>`).join('')}
       </div>` : ''}
 
+      ${(entry.process || []).length ? `
+      <section class="dr-process">
+        <h3 class="dr-process-head">Process</h3>
+        ${entry.process.map(post => `
+        <div class="dr-post">
+          <div class="dr-post-meta">
+            <span class="dr-post-title">${esc(post.title)}</span>
+            ${post.date ? `<span class="dr-post-date">${formatDate(post.date)}</span>` : ''}
+          </div>
+          ${post.image ? `<a href="${esc(post.image)}" target="_blank"><img class="dr-post-img" src="${esc(post.image)}" alt="${esc(post.title)}" loading="lazy"></a>` : ''}
+          ${post.text ? `<p class="dr-post-text">${post.text}</p>` : ''}
+        </div>`).join('')}
+      </section>` : ''}
+
       ${links.length ? `<div class="dr-links">${links.join('')}</div>` : ''}
 
       <nav class="dr-pager">
