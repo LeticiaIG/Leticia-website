@@ -219,7 +219,7 @@ nav {
     position: relative;
     overflow: hidden;
     padding: 0;
-    background: #0a0d12;   /* dark base so pre-load has no cream flash */
+    background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3801,7 +3801,7 @@ body {
     display: flex;
     align-items: flex-end;
     overflow: hidden;
-    background: #080F1E;   /* dark navy — shows while video loads */
+    background: #000;
 }
 
 /* Legibility gradient */
@@ -4921,7 +4921,7 @@ body {
 }
 
 #hero-slider {
-    background: #080F1E;
+    background: #000;
 }
 
 
