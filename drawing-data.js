@@ -26,7 +26,7 @@
 
 const DRAWING_COURSE = {
   title: 'Drawing ++',
-  subtitle: 'Weekly sketches, experiments and notes from class.',
+  subtitle: 'Weekly sketches, experiments and notes.',
   term: 'Fall 2026',
   feedbackEmail: 'leticiai@mit.edu'   // where the Feedback box sends messages
 };

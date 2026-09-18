@@ -18,8 +18,8 @@
                 <li><a href="#research-section">Research</a></li>
                 <li><a href="#activity-section">Activity</a></li>
                 <li><a href="drawing.html">Drawing ++</a></li>
-                <li><a href="#about">Information</a></li>
-                <li><a href="#about">Contact</a></li>
+                <li><a href="#about" id="information-link">Information</a></li>
+                <li><a href="mailto:leticiai@mit.edu">Contact</a></li>
                 <li><a href="#" id="search-toggle">Search</a></li>
                 <li class="lang-toggle"><a href="#" id="lang-switch">ES</a></li>
             </ul>
@@ -45,7 +45,11 @@
             <p class="section-label-small">Selected Projects</p>
             <h2 class="section-title-large">Work that reimagines how we<br><em>inhabit</em> our cities.</h2>
         </div>
-        <div class="projects-grid" id="works-grid">
+        <div class="works-viewswitch">
+            <button type="button" class="vs-btn is-active" data-view="list">List</button>
+            <button type="button" class="vs-btn" data-view="grid">Grid</button>
+        </div>
+        <div class="projects-grid view-list" id="works-grid">
             <!-- Rendered by app.js -->
         </div>
         <div class="view-all-container">
@@ -174,7 +178,7 @@
                     <span>CV</span>
                     <span class="cv-toggle-icon">+</span>
                 </button>
-                <p class="footer-copy">Leticia Izquierdo &nbsp;·&nbsp; &copy; 2026</p>
+                <p class="footer-copy">Leti Izquierdo &nbsp;·&nbsp; &copy; 2026</p>
             </div>
             <div class="cv-content" id="cv-content">
                 <div class="cv-grid cv-grid-2">

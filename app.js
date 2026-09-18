@@ -516,7 +516,7 @@ function renderWorksStory(works) {
     const imgUrl = work.image || '';
     const meta = [work.year, work.location].filter(Boolean).join(' · ');
     const inner = `
-        <div class="work-media" style="background-image:url('${imgUrl}')"></div>
+        <div class="work-media"><img src="${imgUrl}" alt="${(work.title || '').replace(/"/g, '')}" loading="lazy"></div>
         <div class="work-caption">
           <span class="work-title">${work.title}</span>
           ${meta ? `<span class="work-meta">${meta}</span>` : ''}
@@ -1706,3 +1706,30 @@ function initScrollProgress() {
     });
   });
 })();
+
+
+// ======================================
+// WORKS: list / grid view switch + Information opens the CV
+// ======================================
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('works-grid');
+  document.querySelectorAll('.works-viewswitch .vs-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!grid) return;
+      const view = btn.dataset.view;
+      grid.classList.toggle('view-grid', view === 'grid');
+      grid.classList.toggle('view-list', view === 'list');
+      document.querySelectorAll('.works-viewswitch .vs-btn')
+        .forEach(b => b.classList.toggle('is-active', b === btn));
+    });
+  });
+
+  const info = document.getElementById('information-link');
+  if (info) {
+    info.addEventListener('click', () => {
+      const content = document.getElementById('cv-content');
+      const toggle  = document.getElementById('cv-toggle');
+      if (content && toggle && !content.classList.contains('open')) toggle.click();
+    });
+  }
+});

@@ -298,3 +298,6 @@ body.drawing-page::before { display: none; }
 
 .drawing-page header .nav-links a.active,
 .drawing-page header.scrolled .nav-links a.active { color: #fff; border-bottom-color: #fff; }
+
+/* No rounded corners anywhere */
+*, *::before, *::after { border-radius: 0 !important; }
