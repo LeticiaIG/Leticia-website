@@ -5330,3 +5330,11 @@ footer#about .cv-toggle:hover {
 
 /* Section label readable on light background */
 .section-label-small { color: rgba(0,0,0,0.45) !important; }
+
+/* Activity: wide card (Drawing ++) */
+.featured-card--wide {
+    grid-column: 1 / -1;
+    min-height: 220px;
+    display: block;
+    text-decoration: none;
+}
