@@ -5062,6 +5062,48 @@ footer#about .cv-toggle:hover {
 .section-title-large em { color: inherit !important; }
 
 
+/* Hero background: rotating cube showing halves of the image */
+.hero-cube-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    perspective: 1800px;
+}
+
+.hero-cube {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    animation: heroCubeSpin 32s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+
+.hero-face {
+    position: absolute;
+    inset: 0;
+    background-image: url('Images/Figure1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    backface-visibility: hidden;
+    opacity: 0.85;
+}
+
+.hero-face--a { transform: translateZ(28vw);                  background-position: 0% center; }
+.hero-face--b { transform: rotateY(90deg)  translateZ(28vw);  background-position: 100% center; }
+.hero-face--c { transform: rotateY(180deg) translateZ(28vw);  background-position: 35% center; }
+.hero-face--d { transform: rotateY(270deg) translateZ(28vw);  background-position: 70% center; }
+
+@keyframes heroCubeSpin {
+    0%,   18% { transform: rotateY(0deg); }
+    25%,  43% { transform: rotateY(-90deg); }
+    50%,  68% { transform: rotateY(-180deg); }
+    75%,  93% { transform: rotateY(-270deg); }
+    100%      { transform: rotateY(-360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-cube { animation: none; }
+}
+
 /* Hero background image */
 #hero-img {
     position: absolute;
