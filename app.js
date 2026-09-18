@@ -512,23 +512,18 @@ function renderWorksStory(works) {
   const hasMore = projectsToShow.length > INITIAL_PROJECTS;
 
   const renderCard = (work, index) => {
-    const isFirst = index === 0;
     const isHidden = index >= INITIAL_PROJECTS ? 'hidden-project' : '';
     const imgUrl = work.image || '';
-    const delay = index * 0.08;
-    return `
-      <div class="project-card ${isFirst ? 'project-card--featured' : ''} ${isHidden}"
-           style="background-image:url('${imgUrl}'); animation-delay:${delay}s">
-        <div class="project-card-overlay"></div>
-        <div class="project-card-content">
-          <span class="project-tag">${work.year} · ${work.type || 'Project'}</span>
-          <div class="project-name">${work.title}</div>
-          <p class="project-desc">${work.description || ''}</p>
-          ${work.location ? `<p class="project-location">${work.location}</p>` : ''}
-        </div>
-        ${work.link ? `<a href="${work.link}" target="_blank" class="project-arrow">↗</a>` : ''}
-      </div>
-    `;
+    const meta = [work.year, work.location].filter(Boolean).join(' · ');
+    const inner = `
+        <div class="work-media" style="background-image:url('${imgUrl}')"></div>
+        <div class="work-caption">
+          <span class="work-title">${work.title}</span>
+          ${meta ? `<span class="work-meta">${meta}</span>` : ''}
+        </div>`;
+    return work.link
+      ? `<a class="project-card work-item ${isHidden}" href="${work.link}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="project-card work-item ${isHidden}">${inner}</div>`;
   };
 
   container.innerHTML = projectsToShow.map((w, i) => renderCard(w, i)).join('');
@@ -1651,3 +1646,63 @@ function initScrollProgress() {
     progressBar.style.width = scrolled + '%';
   });
 }
+
+
+// ======================================
+// SITE SEARCH (nav → Search)
+// ======================================
+(function initSearch() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle  = document.getElementById('search-toggle');
+    const overlay = document.getElementById('search-overlay');
+    const input   = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    if (!toggle || !overlay || !input || !results) return;
+
+    const open = () => { overlay.classList.add('is-open'); input.value = ''; results.innerHTML = ''; input.focus(); };
+    const close = () => overlay.classList.remove('is-open');
+
+    toggle.addEventListener('click', e => { e.preventDefault(); open(); });
+    overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+    // Everything on the page that can be searched
+    const collect = () => {
+      const groups = [
+        ['Project',     '#works-grid .work-item'],
+        ['Research',    '#research-list > *'],
+        ['Activity',    '#activity-section .featured-card, #activity-compact-mentions > *']
+      ];
+      const items = [];
+      groups.forEach(([kind, sel]) => {
+        document.querySelectorAll(sel).forEach(el => {
+          const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+          if (text) items.push({ kind, text, el });
+        });
+      });
+      return items;
+    };
+
+    let index = null;
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      if (!index) index = collect();
+      if (q.length < 2) { results.innerHTML = ''; return; }
+      const hits = index.filter(i => i.text.toLowerCase().includes(q)).slice(0, 20);
+      results.innerHTML = hits.length
+        ? hits.map((h, i) => `<a href="#" data-i="${i}"><span class="sr-kind">${h.kind}</span>${h.text.slice(0, 110)}</a>`).join('')
+        : '<a href="#"><span class="sr-kind">No results</span></a>';
+      results.querySelectorAll('a[data-i]').forEach(a => {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          const hit = hits[+a.dataset.i];
+          close();
+          if (hit && hit.el) {
+            hit.el.classList.remove('hidden-project');
+            hit.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        });
+      });
+    });
+  });
+})();

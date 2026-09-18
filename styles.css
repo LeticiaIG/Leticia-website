@@ -5116,3 +5116,154 @@ footer#about .cv-toggle:hover {
     filter: none;
     opacity: 0.85;
 }
+
+
+/* ── INTRO SCREEN (Es Devlin style) ── */
+#hero-slider.intro-screen {
+    min-height: 100vh;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 0;
+}
+#hero-slider.intro-screen .hero-scroll-hint { bottom: 2.5rem; }
+.intro-screen .intro-inner { text-align: center; }
+.intro-name {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    margin: 0;
+}
+.intro-role {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-top: 1rem;
+}
+
+/* ── WORKS: full-bleed stacked list ── */
+#works-grid-section .projects-grid {
+    display: block;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+}
+.work-item {
+    display: block;
+    position: static;
+    width: 100%;
+    aspect-ratio: auto;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    text-decoration: none;
+    margin-bottom: 3.5rem;
+    cursor: pointer;
+}
+.work-media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+    background-color: #111;
+}
+.work-item:hover .work-media { opacity: 0.88; transition: opacity 0.3s ease; }
+.work-caption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.7rem 2rem 0;
+}
+.work-title {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #111;
+}
+.work-meta {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: rgba(0,0,0,0.45);
+}
+@media (max-width: 700px) {
+    .work-media { aspect-ratio: 4 / 3; }
+    .work-caption { padding: 0.6rem 1rem 0; }
+}
+
+
+/* ── SEARCH OVERLAY ── */
+.search-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(8px);
+    padding: 22vh 1.5rem 0;
+}
+.search-overlay.is-open { display: block; }
+.search-box { max-width: 720px; margin: 0 auto; }
+.search-box input {
+    width: 100%;
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 300;
+    color: #fff;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    padding: 0.5rem 0;
+}
+.search-box input:focus { outline: none; border-bottom-color: #fff; }
+.search-hint {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+}
+.search-results { margin-top: 2rem; max-height: 46vh; overflow-y: auto; }
+.search-results a {
+    display: block;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+.search-results a:hover { color: #fff; }
+.search-results .sr-kind {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-right: 0.7rem;
+}
+
+/* Works list: beat the older .project-card rules */
+#works-grid .work-item {
+    display: block !important;
+    aspect-ratio: auto !important;
+    background: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+}
+#works-grid .work-item::before,
+#works-grid .work-item::after { display: none !important; }
+#works-grid .work-media { display: block; width: 100% !important; max-width: none !important; }

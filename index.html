@@ -18,42 +18,20 @@
                 <li><a href="#research-section">Research</a></li>
                 <li><a href="#activity-section">Activity</a></li>
                 <li><a href="drawing.html">Drawing ++</a></li>
+                <li><a href="#about">Information</a></li>
                 <li><a href="#about">Contact</a></li>
+                <li><a href="#" id="search-toggle">Search</a></li>
                 <li class="lang-toggle"><a href="#" id="lang-switch">ES</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- HERO -->
-    <section id="hero-slider">
-        <div class="slider-container">
-            <div class="slides">
-                <div class="slide active" id="hero-slide">
-                    <div class="hero-cube-stage">
-                        <div class="hero-cube">
-                            <div class="hero-face hero-face--a"></div>
-                            <div class="hero-face hero-face--b"></div>
-                            <div class="hero-face hero-face--c"></div>
-                            <div class="hero-face hero-face--d"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- INTRO -->
+    <section id="hero-slider" class="intro-screen">
+        <div class="intro-inner">
+            <h1 class="intro-name">LETICI.AI</h1>
+            <p class="intro-role">Architect &amp; media designer</p>
         </div>
-        <div class="hero-content">
-            <p class="hero-label">Architect &amp; media designer</p>
-            <h1 class="hero-headline">Media designer.<br>Architect of cities.</h1>
-            <p class="hero-sub">Simulating people, spaces, and decisions<br>before they become real.</p>
-
-            <div class="hero-actions">
-                <a href="#works-grid-section" class="hero-btn-primary">
-                    Explore Work
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="mailto:leticiai@mit.edu" class="hero-btn-secondary">Contact</a>
-            </div>
-        </div>
-
         <div class="hero-scroll-hint">
             <span>Scroll</span>
             <div class="hero-scroll-line"></div>
@@ -210,6 +188,15 @@
             </div>
         </div>
     </footer>
+
+    <!-- SEARCH -->
+    <div class="search-overlay" id="search-overlay">
+        <div class="search-box">
+            <input type="search" id="search-input" placeholder="Search projects, talks, publications…" autocomplete="off">
+            <p class="search-hint">Type to filter · Esc to close</p>
+            <div class="search-results" id="search-results"></div>
+        </div>
+    </div>
 
     <script src="config.js"></script>
     <script src="app.js"></script>
