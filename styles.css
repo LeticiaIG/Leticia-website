@@ -3955,7 +3955,7 @@ body {
 /* Scroll hint */
 .hero-scroll-hint {
     position: absolute;
-    bottom: 4.5rem;   /* above the 52px upcoming banner */
+    bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -5029,3 +5029,34 @@ footer#about .cv-toggle:hover {
     margin-top: 1rem;
     border-top: 1px solid rgba(255,255,255,0.07);
 }
+
+
+/* ── HERO: old-school serif, no accent colour ── */
+.hero-label {
+    font-family: 'Times New Roman', Times, serif !important;
+    font-size: 0.95rem !important;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: none;
+    color: rgba(255,255,255,0.6) !important;
+    margin-bottom: 1.1rem;
+}
+
+.hero-headline {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    color: #FAFAFA;
+}
+
+.hero-headline em,
+.hero-accent {
+    font-style: normal;
+    color: #FAFAFA;
+    font-weight: 400;
+}
+
+/* Section labels & emphasis: no accent colour */
+.section-label-small { color: rgba(255,255,255,0.55) !important; }
+.section-title-large em { color: inherit !important; }
