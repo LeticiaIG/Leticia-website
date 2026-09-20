@@ -5347,3 +5347,8 @@ body:not(.drawing-page) header:not(.scrolled) .logo {
 body:not(.drawing-page) header .logo {
     transition: opacity 0.4s ease, color 0.4s ease;
 }
+
+/* ── Typography: old-school serif across the whole site ── */
+*, *::before, *::after {
+    font-family: "Times New Roman", Times, Georgia, serif !important;
+}

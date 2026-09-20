@@ -429,3 +429,8 @@
         font-size: 1.8rem;
     }
 }
+
+/* ── Typography: old-school serif across the whole site ── */
+*, *::before, *::after {
+    font-family: "Times New Roman", Times, Georgia, serif !important;
+}
