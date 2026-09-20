@@ -5338,3 +5338,12 @@ footer#about .cv-toggle:hover {
     display: block;
     text-decoration: none;
 }
+
+/* Hide the top-left name while the intro (with the big name) is on screen */
+body:not(.drawing-page) header:not(.scrolled) .logo {
+    opacity: 0;
+    pointer-events: none;
+}
+body:not(.drawing-page) header .logo {
+    transition: opacity 0.4s ease, color 0.4s ease;
+}
