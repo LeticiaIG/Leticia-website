@@ -5271,7 +5271,7 @@ footer#about .cv-toggle:hover {
 
 /* ── WORKS: centred column, real image proportions, list/grid views ── */
 #works-grid-section .projects-grid {
-    max-width: 1100px;
+    max-width: 820px;
     margin: 0 auto;
     padding: 0 2rem;
 }
@@ -5352,3 +5352,40 @@ body:not(.drawing-page) header .logo {
 *, *::before, *::after {
     font-family: "Times New Roman", Times, Georgia, serif !important;
 }
+
+
+/* ── INTRO: slow slideshow behind the name ── */
+.intro-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+}
+.intro-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    animation: introFade 30s linear infinite;
+}
+#hero-slider.intro-screen .intro-inner,
+#hero-slider.intro-screen .hero-scroll-hint { position: relative; z-index: 2; }
+
+@keyframes introFade {
+    0%   { opacity: 0;    transform: scale(1.04); }
+    5%   { opacity: 0.32; }
+    18%  { opacity: 0.32; }
+    23%  { opacity: 0;    transform: scale(1.10); }
+    100% { opacity: 0;    transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .intro-slide { animation: none; opacity: 0.22; }
+    .intro-slide:not(:first-child) { display: none; }
+}
+
+
+/* Works list: a little smaller still, and tighter captions */
+#works-grid.view-list .work-item { margin-bottom: 2.5rem; }
+#works-grid.view-grid { grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
